@@ -1,6 +1,6 @@
 package bindings;
 typedef WebGLRenderContext =
-#if boo
+#if idea
 bindings.mock.WebGLRenderContext;
 #elseif lime
 lime.graphics.WebGLRenderContext;
