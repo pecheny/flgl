@@ -160,19 +160,3 @@ class ViewportRect {
         this.height = h;
     }
 }
-
-interface Bindable {
-    function bind():Void;
-
-    function unbind():Void;
-}
-
-interface GLInitable {
-    public function init(gl:WebGLRenderContext, program:GLProgram):Void;
-}
-
-interface RenderingElement extends Bindable extends GLInitable {}
-
-
-
-
