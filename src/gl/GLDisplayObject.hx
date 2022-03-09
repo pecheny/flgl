@@ -33,10 +33,10 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     private var indicesBuffer:GLBuffer;
     var screenTIdx:GLUniformLocation;
     var shaderBuilder:WebGLRenderContext -> GLProgram;
-    var renderingAspect:RenderingElement;
+    var renderingAspect:RenderingAspect;
     var one:Bool;
 
-    public function new(set:T, shaderBuilder:WebGLRenderContext -> GLProgram, aspect:RenderingElement, one = false) {
+    public function new(set:T, shaderBuilder:WebGLRenderContext -> GLProgram, aspect:RenderingAspect, one = false) {
         super();
         this.one = one;
         this.renderingAspect = aspect;

@@ -1,4 +1,7 @@
 package shaderbuilder;
+import data.aliases.AttribAliases;
+import gl.sets.MSDFSet;
+import gl.aspects.MSDFTextureBinder;
 import data.aliases.VaryingAliases;
 import bindings.GLProgram;
 import bindings.GLUniformLocation;
@@ -6,6 +9,7 @@ import bindings.WebGLRenderContext;
 import shaderbuilder.SnaderBuilder.PosPassthrough;
 import shaderbuilder.SnaderBuilder.ShaderBase;
 import shaderbuilder.SnaderBuilder.Uv0Passthrough;
+import gl.RenderingAspect;
 
 
 class MSDFFrag implements ShaderElement {
@@ -115,9 +119,9 @@ class MSDFShader extends ShaderBase {
 
 }
 
-class MSDFRenderingElement implements RenderingElement {
+class MSDFRenderingElement implements RenderingAspect {
     var gl:WebGLRenderContext;
-    var texure:RenderingElement;
+    var texure:RenderingAspect;
     var glyphAtlasTextureUnit = 0;
 
     var fieldRange:GLUniformLocation;

@@ -1,7 +1,6 @@
 package gl.sets;
 
-import data.AttribAliases;
-import data.AttribSet;
+import data.aliases.AttribAliases;
 import data.DataType;
 import gl.AttribSet;
 class MSDFSet extends AttribSet {
