@@ -4,7 +4,7 @@ import al.al2d.Axis2D;
 class ProportionalTransformer extends Transformer {
     var localScale = 1.;
 
-    public function transformValue(c:Int, input:Float) {
+    override public function transformValue(c:Int, input:Float) {
         var a = Axis2D.fromInt(c);
         var sign = c == 0 ? 1 : -1;
         var free = size[c] - bounds.size[a] * localScale;

@@ -3,7 +3,7 @@ import al.al2d.Boundbox;
 import al.al2d.Axis2D;
 using transform.LiquidTransformer.BoundboxConverters;
 class LiquidTransformer extends Transformer {
-    public function transformValue(c:Int, input:Float) {
+    override public function transformValue(c:Int, input:Float) {
         var a = Axis2D.fromInt(c);
         var sign = c == 0 ? 1 : -1;
         return

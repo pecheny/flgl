@@ -27,7 +27,9 @@ class Transformer {
         bounds.set(x, y, w, h);
     }
 
-    public function invalidate(){}
+    public function invalidate() {}
+
+    public function transformValue(c:Int, input:Float):Float {throw "N/A";}
 }
 
 class TransformatorAxisApplier implements AxisApplier {
