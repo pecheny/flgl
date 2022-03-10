@@ -20,12 +20,13 @@ class AttribSet {
     var writers:Map<String, AttributeWriters> = new Map();
 //    var offset:Int = 0;
 
-    public function addAttribute(name:String, numComponents:Int, type:DataType) {
+    public function addAttribute(name:String, numComponents:Int, type:DataType, normalized:Bool = false) {
         var descr = {
             name:name,
             numComponents:numComponents,
             type:type,
             offset:stride,
+            normalized:normalized
         }
         writers[name] = createWritersForAttribute(descr);
         stride += numComponents * getGlSize(type);
@@ -66,7 +67,7 @@ class AttribSet {
         var attrs = [];
         for (desc in attributes) {
             var posIdx = gl.getAttribLocation(program, desc.name);
-            attrs.push(new AttributeState(posIdx, desc.numComponents, desc.type, desc.name));
+            attrs.push(new AttributeState(posIdx, desc));
         }
         return new ShadersAttrs(attrs);
     }
@@ -75,11 +76,10 @@ class AttribSet {
         var offset = 0;
         var attributes = attrsState.attrs;
         for (i in 0...attributes.length) {
-            var descr:AttributeState = attributes[i];
-            descr.offset = offset;
-            gl.enableVertexAttribArray(descr.idx);
-            var normalized = ("colorIn" == descr.name);
-            gl.vertexAttribPointer(descr.idx, descr.numComponents, getGlType(descr.type, gl), normalized, stride, offset);
+            var state = attributes[i];
+            var descr= state.descr;
+            gl.enableVertexAttribArray(state.idx);
+            gl.vertexAttribPointer(state.idx, descr.numComponents, getGlType(descr.type, gl), descr.normalized, stride, descr.offset);
             offset += descr.numComponents * getGlSize(descr.type);
         }
     }
@@ -115,14 +115,6 @@ class AttribSet {
         }
     }
     #end
-
-    public static function createAttribute(name:String, numComponents:Int, type:DataType):AttributeDescr {
-        return {
-            name:name,
-            numComponents:numComponents,
-            type:type,
-        }
-    }
 
     public function getView(alias:String) {
         for (desc in attributes) {

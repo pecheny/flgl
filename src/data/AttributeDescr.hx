@@ -5,6 +5,7 @@ typedef AttributeDescr = {
     name:String,
     type:DataType,
     numComponents:Int,
+    normalized:Bool,
     ?offset:Int,
     ?writer:Float->Float
 }
