@@ -1,70 +1,104 @@
 package gl;
 #if lime
-import gl.sets.ColorSet;
+import gl.ShaderRegistry.UniformState;
+import data.DataType;
 import lime.graphics.opengl.GL;
 import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
 #end
 import bindings.GLBuffer;
 import bindings.GLProgram;
-import bindings.GLUniformLocation;
 import bindings.WebGLRenderContext;
-import data.aliases.AttribAliases;
 import gl.AttribSet;
 import data.ShadersAttrs;
-import flash.events.Event;
+import openfl.events.Event;
 import openfl.display.DisplayObject;
 
 #if nme
          import nme.gl.GL as gl;
 #end
-class GLDisplayObject<T:AttribSet> extends DisplayObject {
-    var program:GLProgram;
-    var children:Array<Renderable<T>> = [];
-    var gl:WebGLRenderContext;
-    var viewport:ViewportRect;
 
+class GLState<T:AttribSet> {
+    public var program(default, null):GLProgram;
+    public var uniforms(default, null):Map<String, UniformState> = new Map();
+    public var attrsState(default, null):ShadersAttrs;
+    var attrs:T;
+
+    var gl:WebGLRenderContext;
+
+    public function new(set:T) {
+        attrs = set;
+    }
+
+    public function bind():Void {
+    }
+
+    public function unbind():Void {
+    }
+
+    public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Map<String, DataType>):Void {
+        this.program = program;
+        this.gl = gl;
+        attrsState = attrs.buildState(gl, program);
+        if (uniDef != null) {
+            for (name in uniDef.keys()) {
+                var state = {
+                    name:name,
+                    type:uniDef[name],
+                    location:gl.getUniformLocation(program, name)
+                };
+                uniforms[name] = state;
+            }
+        }
+    }
+
+
+}
+
+
+class GLDisplayObject<T:AttribSet> extends DisplayObject {
+    var children:Array<Renderable<T>> = [];
+    var buffer:GLBuffer;
+    var indicesBuffer:GLBuffer;
+    var targets:RenderTargets<T> ;
+    var renderingAspect:RenderingAspect;
+    var gl:WebGLRenderContext;
+    var set:T;
+
+    var viewport:ViewportRect;
     public var srcAlpha = GL.SRC_ALPHA;
     public var dstAlpha = GL.ONE_MINUS_SRC_ALPHA;
 
-    var buffer:GLBuffer;
-    var set:T;
-    var attrsState:ShadersAttrs;
-    private var indicesBuffer:GLBuffer;
-    var screenTIdx:GLUniformLocation;
-    var shaderBuilder:WebGLRenderContext -> GLProgram;
-    var renderingAspect:RenderingAspect;
-    var one:Bool;
+    var shaderType:String;
+    var shaderRegistry:ShaderRegistry;
 
-    public function new(set:T, shaderBuilder:WebGLRenderContext -> GLProgram, aspect:RenderingAspect, one = false) {
+//    var screenTIdx:GLUniformLocation;
+
+    public function new(set:T, shaderType, shaderStorage, aspect:RenderingAspect) {
         super();
-        this.one = one;
         this.renderingAspect = aspect;
         this.set = set;
-        this.shaderBuilder = shaderBuilder;
-        this.targets  = new RenderTargets(set);
+        this.shaderType = shaderType;
+        this.shaderRegistry = shaderStorage;
+        this.targets = new RenderTargets(set);
         addEventListener(RenderEvent.RENDER_OPENGL, render);
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
+
     var err:String;
+
+    var inited = false;
+
     function init(gl:WebGLRenderContext) {
 //        trace(stage.context3D.driverInfo);
-        try {
-            this.program = shaderBuilder(gl);
-        } catch (e:Dynamic) {
-           err = ""+e;
-        }
-        if (err!= null){
-            trace(err);
-            return;
-        }
-
-        attrsState = set.buildState(gl, program);
+        if (inited)return;
+        this.gl = gl;
         buffer = gl.createBuffer();
         indicesBuffer = gl.createBuffer();
-        screenTIdx = gl.getUniformLocation(program, AttribAliases.NAME_SCREENSPACE_T);
-        if (renderingAspect != null)
-            renderingAspect.init(gl, program);
+        inited = true;
+//        screenTIdx = gl.getUniformLocation(program, AttribAliases.NAME_SCREENSPACE_T);
+//        if (renderingAspect != null)
+//            renderingAspect.init(gl, program);
     }
 
     function onEnterFrame(e) {
@@ -85,66 +119,51 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         children.remove(v) ;
     }
 
-    var targets:RenderTargets<T> ;
-//    var inds = new DynamicBytes(64);
-
 
     public function render(event:RenderEvent) {
         var renderer:OpenGLRenderer = cast event.renderer;
-        if (err != null) {
-            trace("shader error: " + err);
-            throw err;
-        }
-        gl = renderer.gl;
-        if (program == null) {
-            init(gl);
-        }
+        init(renderer.gl);
 
         targets.flush();
 
         for (child in children) {
             child.render(targets);
         }
-        var indCount = targets.indsCount();//;gatherIndices(inds, 0, 0);
-        bind();
+
+        var state = shaderRegistry.getState(gl, shaderType);
+        trace(state);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        set.enableAttributes(gl, state.attrsState);
+        gl.useProgram(state.program);
+        if (renderingAspect != null)
+            renderingAspect.bind();
+
         if (viewport != null)
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
         gl.bufferData(gl.ARRAY_BUFFER, targets.verts.getView(), gl.STREAM_DRAW);
-//         set uniforms
         gl.blendFunc(srcAlpha, dstAlpha);
-        gl.uniform1f(screenTIdx, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), gl.DYNAMIC_DRAW);
-        gl.drawElements(gl.TRIANGLES, indCount, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, targets.indsCount(), gl.UNSIGNED_SHORT, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        unbind();
+//        unbind();
+        gl.useProgram(null);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        if (renderingAspect != null)
+            renderingAspect.unbind();
+
     }
 
     function printVerts(n) {
         for (i in 0...n)
-            trace( set.printVertex(targets.verts.getBytes(), i) );
+            trace(set.printVertex(targets.verts.getBytes(), i));
     }
 
     public function setViewport(x, y, w, h) {
         this.viewport = new ViewportRect(x, y, w, h);
     }
 
-
-    public function bind() {
-        gl.useProgram(program);
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        set.enableAttributes(gl, attrsState);
-        if (renderingAspect != null)
-            renderingAspect.bind();
-    }
-
-    public function unbind() {
-        gl.useProgram(null);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        if (renderingAspect != null)
-            renderingAspect.unbind();
-    }
 }
 
 class ViewportRect {
