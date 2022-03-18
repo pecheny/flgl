@@ -31,6 +31,8 @@ class GLState<T:AttribSet> {
         attrs = set;
     }
 
+
+    // todo uniforms is dead code for now just design notes for future
     public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Map<String, DataType>):Void {
         this.program = program;
         this.gl = gl;
