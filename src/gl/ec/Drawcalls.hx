@@ -1,4 +1,5 @@
 package gl.ec;
+import Type;
 import gl.Renderable;
 import gl.GLDisplayObject;
 import gl.AttribSet;
@@ -11,6 +12,7 @@ class Drawcalls implements CtxBindable {
 
     public function addLayer<T:AttribSet>(set:T, layer:GLDisplayObject<T>, name = "") {
         var id = getLayerId(set, name);
+        trace("layer id " + id);
         if (map.exists(id))
             throw "Already has layer with id " + id;
         map.set(id, layer);
@@ -53,6 +55,10 @@ class Drawcalls implements CtxBindable {
         }
     }
 
+    public function findLayer<T:AttribSet>(attrs:T, layerName) {
+        return map.get(getLayerId(attrs, layerName));
+    }
+
     public static function getLayerId<T:AttribSet>(set:T, layerName:String) {
         return new LayerId(set, layerName);
     }
@@ -60,7 +66,7 @@ class Drawcalls implements CtxBindable {
 
 abstract LayerId<T:AttribSet>(String) to String {
     public inline function new(set:T, n:String) {
-        this = $type(set) + "_" + n;
+        this = Type.getClassName(Type.getClass(set)) + "_" + n;
     }
 }
 @:forward(keys, exists)
