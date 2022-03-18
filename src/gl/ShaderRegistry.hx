@@ -20,7 +20,7 @@ typedef UniformState = {
     var location:GLUniformLocation;
 }
 interface IShaderRegistry {
-    function getState(gl:WebGLRenderContext, name:String):GLState<Dynamic>;
+    function getState<T:AttribSet>(atts:T, gl:WebGLRenderContext, name:String):GLState<T>;
 
     function getAttributeSet(name:String):AttribSet;
 }
@@ -37,12 +37,12 @@ class ShaderRegistry implements IShaderRegistry {
         return descrs[name];
     }
 
-    public function getState(gl, name) {
-        if (shaders.exists(name)) return shaders[name];
+    public function getState<T:AttribSet>(att:T, gl, name):GLState<T> {
+        if (shaders.exists(name)) return cast shaders[name];
         return create(gl, name);
     }
 
-    public function reg(descr:ShaderDescr<Dynamic>) {
+    public function reg<T:AttribSet>(descr:ShaderDescr<T>) {
         descrs[descr.type] = descr;
     }
 //

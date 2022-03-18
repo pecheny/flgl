@@ -68,7 +68,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
 
 //    var shaderType:String;
 //    var shaderRegistry:ShaderRegistry;
-    var shaderFactory:WebGLRenderContext -> GLState<Dynamic>;
+    var shaderFactory:WebGLRenderContext -> GLState<T>;
 
 //    var screenTIdx:GLUniformLocation;
 
@@ -127,7 +127,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
             child.render(targets);
         }
 
-        var state = shaderFactory(gl);
+        var state:GLState<T> = shaderFactory(gl);
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
