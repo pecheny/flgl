@@ -3,13 +3,12 @@ import data.aliases.AttribAliases;
 import gl.sets.MSDFSet;
 import gl.aspects.MSDFTextureBinder;
 import data.aliases.VaryingAliases;
-import bindings.GLProgram;
 import bindings.GLUniformLocation;
 import bindings.WebGLRenderContext;
 import shaderbuilder.SnaderBuilder.PosPassthrough;
 import shaderbuilder.SnaderBuilder.ShaderBase;
 import shaderbuilder.SnaderBuilder.Uv0Passthrough;
-import gl.RenderingAspect;
+import gl.aspects.RenderingAspect;
 
 
 class MSDFFrag implements ShaderElement {
@@ -133,26 +132,13 @@ class MSDFRenderingElement implements RenderingAspect {
         texure = new MSDFTextureBinder(image);
     }
 
-    public function init(gl:WebGLRenderContext, program:GLProgram):Void {
-        this.gl = gl;
-        texure.init(gl, program);
-//        glyphAtlas = gl.getUniformLocation(program, MSDFShader.glyphAtlas);
-//        fieldRange = gl.getUniformLocation(program, MSDFShader.fieldRange);
-//        resolution = gl.getUniformLocation(program, MSDFShader.resolution);
-        color = gl.getUniformLocation(program, MSDFShader.color);
-//        _transform = gl.getUniformLocation(program, MSDFShader.transform);
-    }
 
-    public function bind():Void {
-        texure.bind();
-//        gl.uniformMatrix4fv(_transform, false, mat);
-//        gl.uniform1i(glyphAtlas, glyphAtlasTextureUnit);
-//        gl.uniform1f(fieldRange, fieldRange_px);
-//        gl.uniform2f(resolution, stage.stageWidth, stage.stageHeight);
+    public function bind(gl):Void {
+        texure.bind(gl);
         gl.uniform4f(color, 0.9, 0.9, 0.9, 1.0);
     }
 
-    public function unbind():Void {
-        texure.unbind();
+    public function unbind(gl):Void {
+        texure.unbind(gl);
     }
 }

@@ -6,6 +6,7 @@ import lime.graphics.opengl.GL;
 import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
 #end
+import gl.aspects.RenderingAspect;
 import bindings.GLBuffer;
 import bindings.GLProgram;
 import bindings.WebGLRenderContext;
@@ -28,12 +29,6 @@ class GLState<T:AttribSet> {
 
     public function new(set:T) {
         attrs = set;
-    }
-
-    public function bind():Void {
-    }
-
-    public function unbind():Void {
     }
 
     public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Map<String, DataType>):Void {
@@ -69,17 +64,17 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     public var srcAlpha = GL.SRC_ALPHA;
     public var dstAlpha = GL.ONE_MINUS_SRC_ALPHA;
 
-    var shaderType:String;
-    var shaderRegistry:ShaderRegistry;
+//    var shaderType:String;
+//    var shaderRegistry:ShaderRegistry;
+    var shaderFactory:WebGLRenderContext -> GLState<Dynamic>;
 
 //    var screenTIdx:GLUniformLocation;
 
-    public function new(set:T, shaderType, shaderStorage, aspect:RenderingAspect) {
+    public function new(set:T, shaderFactory, aspect:RenderingAspect) {
         super();
         this.renderingAspect = aspect;
         this.set = set;
-        this.shaderType = shaderType;
-        this.shaderRegistry = shaderStorage;
+        this.shaderFactory = shaderFactory;
         this.targets = new RenderTargets(set);
         addEventListener(RenderEvent.RENDER_OPENGL, render);
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -130,13 +125,12 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
             child.render(targets);
         }
 
-        var state = shaderRegistry.getState(gl, shaderType);
-        trace(state);
+        var state = shaderFactory(gl);
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
         if (renderingAspect != null)
-            renderingAspect.bind();
+            renderingAspect.bind(gl);
 
         if (viewport != null)
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
@@ -151,7 +145,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         gl.useProgram(null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         if (renderingAspect != null)
-            renderingAspect.unbind();
+            renderingAspect.unbind(gl);
 
     }
 

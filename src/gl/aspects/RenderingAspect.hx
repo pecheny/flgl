@@ -1,17 +1,12 @@
-package gl;
-import bindings.GLProgram;
+package gl.aspects;
 import bindings.WebGLRenderContext;
-interface Bindable {
-    function bind():Void;
 
-    function unbind():Void;
-}
 
-interface GLInitable {
-    public function init(gl:WebGLRenderContext, program:GLProgram):Void;
-}
+interface RenderingAspect {
 
-interface RenderingAspect extends Bindable extends GLInitable {
+    function bind(gl:WebGLRenderContext):Void ;
+
+    function unbind(gl:WebGLRenderContext):Void ;
 }
 
 interface RenderingElementsFactory {
@@ -29,21 +24,15 @@ class RenderingAspects implements RenderingAspect {
         this.children = children;
     }
 
-    public function bind():Void {
+    public function bind(gl):Void {
         for (c in children)
-            c.bind();
+            c.bind(gl);
     }
 
-    public function unbind():Void {
+    public function unbind(gl):Void {
         for (c in children)
-            c.unbind();
+            c.unbind(gl);
     }
-
-    public function init(gl:WebGLRenderContext, program:GLProgram):Void {
-        for (c in children)
-            c.init(gl, program);
-    }
-
 }
 
 class RenderAspectBuilder implements RenderingElementsFactory {

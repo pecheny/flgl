@@ -1,21 +1,11 @@
 package gl;
 import bindings.GLProgram;
-import shaderbuilder.SnaderBuilder.ShaderBase;
-import bindings.WebGLRenderContext;
-import gl.GLDisplayObject.GLState;
-import shaderbuilder.MSDFShader.MSDFFrag;
-import shaderbuilder.MSDFShader.LogisticSmoothnessCalculator;
-import gl.sets.MSDFSet;
-import shaderbuilder.TextureFragment;
-import shaderbuilder.SnaderBuilder.Uv0Passthrough;
-import gl.sets.TexSet;
-import shaderbuilder.SnaderBuilder.ColorPassthroughFrag;
-import shaderbuilder.SnaderBuilder.PosPassthrough;
-import shaderbuilder.SnaderBuilder.ColorPassthroughVert;
-import gl.sets.ColorSet;
 import bindings.GLUniformLocation;
+import bindings.WebGLRenderContext;
 import data.DataType;
+import gl.GLDisplayObject.GLState;
 import shaderbuilder.ShaderElement;
+import shaderbuilder.SnaderBuilder.ShaderBase;
 typedef ShaderDescr<T:AttribSet> = {
         type:String,
         vert:Array<ShaderElement>,
@@ -29,33 +19,18 @@ typedef UniformState = {
     var type:DataType;
     var location:GLUniformLocation;
 }
+interface IShaderRegistry {
+    function getState(gl:WebGLRenderContext, name:String):GLState<Dynamic>;
 
-class ShaderRegistry {
-    var descrColor = {
-        type:"color",
-        attrs:ColorSet.instance,
-        vert:[ColorPassthroughVert.instance, PosPassthrough.instance],
-        frag:[cast ColorPassthroughFrag.instance]
-    }
-    var descrImage = {
-        type:"texture",
-        attrs:TexSet.instance,
-        vert:[Uv0Passthrough.instance, PosPassthrough.instance],
-        frag:[cast TextureFragment.get(0, 0)] // todo check
-    }
-    var descrMsdf = {
-        type:"msdf",
-        attrs:MSDFSet.instance,
-        vert:[Uv0Passthrough.instance, PosPassthrough.instance, LogisticSmoothnessCalculator.instance],
-        frag:[cast MSDFFrag.instance]
-    }
+    function getAttributeSet(name:String):AttribSet;
+}
+
+class ShaderRegistry implements IShaderRegistry {
+
     var descrs = new Map<String, ShaderDescr<Dynamic>>();
     var shaders:Map<String, GLState<Dynamic>> = new Map();
 
     public function new() {
-        reg(descrColor);
-        reg(descrImage);
-        reg(descrMsdf);
     }
 
     public function getDescr(name):ShaderDescr<Dynamic> {
@@ -92,4 +67,10 @@ class ShaderRegistry {
         state.init(gl, program, descr.uniforms);
         return state;
     }
+
+    public function getAttributeSet(name:String):AttribSet {
+        trace(name);
+        return getDescr(name).attrs;
+    }
+
 }
