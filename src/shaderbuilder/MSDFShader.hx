@@ -1,14 +1,14 @@
 package shaderbuilder;
-import data.aliases.AttribAliases;
-import gl.sets.MSDFSet;
-import gl.aspects.MSDFTextureBinder;
-import data.aliases.VaryingAliases;
 import bindings.GLUniformLocation;
 import bindings.WebGLRenderContext;
+import data.aliases.AttribAliases;
+import data.aliases.VaryingAliases;
+import gl.aspects.RenderingAspect;
+import gl.aspects.TextureBinder;
+import gl.sets.MSDFSet;
 import shaderbuilder.SnaderBuilder.PosPassthrough;
 import shaderbuilder.SnaderBuilder.ShaderBase;
 import shaderbuilder.SnaderBuilder.Uv0Passthrough;
-import gl.aspects.RenderingAspect;
 
 
 class MSDFFrag implements ShaderElement {
@@ -33,8 +33,8 @@ class MSDFFrag implements ShaderElement {
     public function getExprs():String {
         /* смуснес подогнана для вычесления от -s до + s,
 						но формула для обводки не подходит в этом случае, фон перестает быть прозрачным. */
-                    return
-                        ' float vFieldRangeDisplay_px = 120.0;
+        return
+            ' float vFieldRangeDisplay_px = 120.0;
         			    vec4 sample = texture2D(${MSDFShader.glyphAtlas}, $uv_v);
 						float sigDist =  median(sample.r, sample.g, sample.b) - 0.5;
 						// spread field range over 1px for antialiasing
@@ -90,7 +90,7 @@ class LogisticSmoothnessCalculator implements ShaderElement {
                            float ert = exp(r*t);
                            return 0.05 +  k -(k * p0 * ert) / (k + p0 *(ert - 1.));
     }
-'    ;
+' ;
     }
 
     public function getExprs():String {
@@ -119,23 +119,17 @@ class MSDFShader extends ShaderBase {
 }
 
 class MSDFRenderingElement implements RenderingAspect {
-    var gl:WebGLRenderContext;
     var texure:RenderingAspect;
-    var glyphAtlasTextureUnit = 0;
-
-    var fieldRange:GLUniformLocation;
-    var resolution:GLUniformLocation;
     var color:GLUniformLocation;
-    var _transform:GLUniformLocation;
+    var inited = false;
 
-    public function new (image) {
-        texure = new MSDFTextureBinder(image);
+    public function new(s, p) {
+        texure = new TextureBinder(s, p);
     }
 
-
-    public function bind(gl):Void {
+    public function bind(gl:WebGLRenderContext):Void {
         texure.bind(gl);
-        gl.uniform4f(color, 0.9, 0.9, 0.9, 1.0);
+        gl.uniform4f(color, 1.0, 0.4, 0.4, 1.0);
     }
 
     public function unbind(gl):Void {

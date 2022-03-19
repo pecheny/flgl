@@ -1,7 +1,7 @@
 package gl.aspects;
 import FuiBuilder.TextureStorage;
 import bindings.GLTexture;
-import bindings.mock.WebGLRenderContext;
+import bindings.WebGLRenderContext;
 class TextureBinder implements RenderingAspect {
     var storage:TextureStorage;
     var path:String;
@@ -16,14 +16,11 @@ class TextureBinder implements RenderingAspect {
     public function bind(gl:WebGLRenderContext):Void {
         init(gl);
         gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }
 
     public function unbind(gl:WebGLRenderContext):Void {
         gl.bindTexture(gl.TEXTURE_2D, null);
-    }
-
-    function setProps(gl:WebGLRenderContext) {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }
 
     inline function init(gl:WebGLRenderContext):Void {
@@ -31,6 +28,4 @@ class TextureBinder implements RenderingAspect {
             texture = storage.get(gl, path);
         }
     }
-
-
 }
