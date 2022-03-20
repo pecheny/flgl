@@ -1,12 +1,12 @@
 package gl.aspects;
-import bindings.WebGLRenderContext;
+import gl.GLDisplayObject.GLState;
 
 
 interface RenderingAspect {
 
-    function bind(gl:WebGLRenderContext):Void ;
+    function bind(state:GLState<Dynamic>):Void ;
 
-    function unbind(gl:WebGLRenderContext):Void ;
+    function unbind(state:GLState<Dynamic>):Void ;
 }
 
 interface RenderingElementsFactory {

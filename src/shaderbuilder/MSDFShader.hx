@@ -1,6 +1,6 @@
 package shaderbuilder;
+import gl.GLDisplayObject.GLState;
 import bindings.GLUniformLocation;
-import bindings.WebGLRenderContext;
 import data.aliases.AttribAliases;
 import data.aliases.VaryingAliases;
 import gl.aspects.RenderingAspect;
@@ -45,16 +45,6 @@ class MSDFFrag implements ShaderElement {
 						vec4 strokeColor = vec4(0.0, 0.0, 0.0, 1.0);
 
 
-//						- smoothstep(-$smothness, $smothness, sigDist -0.2);
-//						float fillAlpha = clamp(sigDist, 0, 1);
-//						float fillAlpha = clamp(sigDist, 0, 1);
-//    					float fillAlpha = step(0.3, sigDist);
-//						float fillAlpha = clamp((sigDist - 0.5) * vFieldRangeDisplay_px + 0.5, 0.0, 1.0);
-//						float strokeWidthPx = 1.0;
-//						float strokeDistThreshold = clamp(strokeWidthPx * 2. / vFieldRangeDisplay_px, 0.0, 1.0);
-//						float strokeDistScale = 1. / (1.0 - strokeDistThreshold);
-//						float _offset = 0.5 / strokeDistScale;
-//						float strokeAlpha = clamp((sigDist - _offset) * vFieldRangeDisplay_px + _offset, 0.0, 1.0);
 
 						vec4 col = vec4(.5, .5, .5, .5);
 						vec4 otp = (
@@ -127,9 +117,10 @@ class MSDFRenderingElement implements RenderingAspect {
         texure = new TextureBinder(s, p);
     }
 
-    public function bind(gl:WebGLRenderContext):Void {
-        texure.bind(gl);
-        gl.uniform4f(color, 1.0, 0.4, 0.4, 1.0);
+    public function bind(state:GLState<Dynamic>):Void {
+        var gl = state.gl;
+        texure.bind(state);
+        gl.uniform4f(state.uniforms["color"], 1.0, 0.4, 0.4, 1.0);
     }
 
     public function unbind(gl):Void {

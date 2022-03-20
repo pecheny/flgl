@@ -1,8 +1,6 @@
 package gl;
 import bindings.GLProgram;
-import bindings.GLUniformLocation;
 import bindings.WebGLRenderContext;
-import data.DataType;
 import gl.GLDisplayObject.GLState;
 import shaderbuilder.ShaderElement;
 import shaderbuilder.SnaderBuilder.ShaderBase;
@@ -11,14 +9,10 @@ typedef ShaderDescr<T:AttribSet> = {
         vert:Array<ShaderElement>,
         frag:Array<ShaderElement>,
         attrs:T,
-        ?uniforms:Map<String, DataType>
+        ?uniforms:Array<String>
 }
 
-typedef UniformState = {
-    var name:String;
-    var type:DataType;
-    var location:GLUniformLocation;
-}
+
 interface IShaderRegistry {
     function getState<T:AttribSet>(atts:T, gl:WebGLRenderContext, name:String):GLState<T>;
 

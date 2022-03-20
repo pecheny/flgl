@@ -1,4 +1,5 @@
 package gl.aspects;
+import gl.GLDisplayObject.GLState;
 import FuiBuilder.TextureStorage;
 import bindings.GLTexture;
 import bindings.WebGLRenderContext;
@@ -13,13 +14,15 @@ class TextureBinder implements RenderingAspect {
         this.path = path;
     }
 
-    public function bind(gl:WebGLRenderContext):Void {
+    public function bind(state:GLState<Dynamic>):Void {
+        var gl = state.gl;
         init(gl);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }
 
-    public function unbind(gl:WebGLRenderContext):Void {
+    public function unbind(state:GLState<Dynamic>):Void {
+        var gl = state.gl;
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
 

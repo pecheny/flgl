@@ -1,7 +1,6 @@
 package gl;
 #if lime
-import gl.ShaderRegistry.UniformState;
-import data.DataType;
+import lime.graphics.opengl.GLUniformLocation;
 import lime.graphics.opengl.GL;
 import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
@@ -21,30 +20,24 @@ import openfl.display.DisplayObject;
 
 class GLState<T:AttribSet> {
     public var program(default, null):GLProgram;
-    public var uniforms(default, null):Map<String, UniformState> = new Map();
+    public var uniforms(default, null):Map<String, GLUniformLocation> = new Map();
     public var attrsState(default, null):ShadersAttrs;
     var attrs:T;
 
-    var gl:WebGLRenderContext;
+    public var gl(default, null):WebGLRenderContext;
 
     public function new(set:T) {
         attrs = set;
     }
 
 
-    // todo uniforms is dead code for now just design notes for future
-    public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Map<String, DataType>):Void {
+    public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Array<String>):Void {
         this.program = program;
         this.gl = gl;
         attrsState = attrs.buildState(gl, program);
         if (uniDef != null) {
-            for (name in uniDef.keys()) {
-                var state = {
-                    name:name,
-                    type:uniDef[name],
-                    location:gl.getUniformLocation(program, name)
-                };
-                uniforms[name] = state;
+            for (name in uniDef) {
+                uniforms[name] = gl.getUniformLocation(program, name);
             }
         }
     }
@@ -132,7 +125,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
         if (renderingAspect != null)
-            renderingAspect.bind(gl);
+            renderingAspect.bind(state);
 
         if (viewport != null)
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
@@ -147,7 +140,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         gl.useProgram(null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         if (renderingAspect != null)
-            renderingAspect.unbind(gl);
+            renderingAspect.unbind(state);
 
     }
 
