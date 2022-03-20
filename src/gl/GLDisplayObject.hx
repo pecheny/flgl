@@ -30,7 +30,6 @@ class GLState<T:AttribSet> {
         attrs = set;
     }
 
-
     public function init(gl:WebGLRenderContext, program:GLProgram, uniDef:Array<String>):Void {
         this.program = program;
         this.gl = gl;
@@ -41,10 +40,7 @@ class GLState<T:AttribSet> {
             }
         }
     }
-
-
 }
-
 
 class GLDisplayObject<T:AttribSet> extends DisplayObject {
     var children:Array<Renderable<T>> = [];
@@ -59,11 +55,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     public var srcAlpha = GL.SRC_ALPHA;
     public var dstAlpha = GL.ONE_MINUS_SRC_ALPHA;
 
-//    var shaderType:String;
-//    var shaderRegistry:ShaderRegistry;
     var shaderFactory:WebGLRenderContext -> GLState<T>;
-
-//    var screenTIdx:GLUniformLocation;
 
     public function new(set:T, shaderFactory, aspect:RenderingAspect) {
         super();
@@ -80,15 +72,11 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     var inited = false;
 
     function init(gl:WebGLRenderContext) {
-//        trace(stage.context3D.driverInfo);
         if (inited)return;
         this.gl = gl;
         buffer = gl.createBuffer();
         indicesBuffer = gl.createBuffer();
         inited = true;
-//        screenTIdx = gl.getUniformLocation(program, AttribAliases.NAME_SCREENSPACE_T);
-//        if (renderingAspect != null)
-//            renderingAspect.init(gl, program);
     }
 
     function onEnterFrame(e) {
@@ -136,12 +124,10 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), gl.DYNAMIC_DRAW);
         gl.drawElements(gl.TRIANGLES, targets.indsCount(), gl.UNSIGNED_SHORT, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-//        unbind();
         gl.useProgram(null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         if (renderingAspect != null)
             renderingAspect.unbind(state);
-
     }
 
     function printVerts(n) {
@@ -152,7 +138,6 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     public function setViewport(x, y, w, h) {
         this.viewport = new ViewportRect(x, y, w, h);
     }
-
 }
 
 class ViewportRect {

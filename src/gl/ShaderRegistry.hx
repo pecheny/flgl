@@ -63,7 +63,6 @@ class ShaderRegistry implements IShaderRegistry {
     }
 
     public function getAttributeSet(name:String):AttribSet {
-        trace(name);
         return getDescr(name).attrs;
     }
 

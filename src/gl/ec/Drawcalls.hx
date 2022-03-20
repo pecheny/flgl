@@ -12,7 +12,6 @@ class Drawcalls implements CtxBindable {
 
     public function addLayer<T:AttribSet>(set:T, layer:GLDisplayObject<T>, name = "") {
         var id = getLayerId(set, name);
-        trace("layer id " + id);
         if (map.exists(id))
             throw "Already has layer with id " + id;
         map.set(id, layer);
