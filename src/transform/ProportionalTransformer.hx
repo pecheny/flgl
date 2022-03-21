@@ -1,7 +1,7 @@
 package transform;
 import al.al2d.Axis2D;
 
-class ProportionalTransformer extends Transformer {
+class ProportionalTransformer extends TransformerBase {
     var localScale = 1.;
 
     override public function transformValue(c:Int, input:Float) {

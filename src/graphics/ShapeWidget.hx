@@ -1,4 +1,5 @@
 package graphics;
+import transform.TransformerBase.Transformer;
 import al.al2d.Axis2D;
 import al.al2d.Widget2D;
 import crosstarget.Widgetable;
@@ -23,7 +24,6 @@ class ShapeWidget<T:AttribSet> extends Widgetable implements Renderable<T> {
     var vertsCount:Int = 0;
     var inds:IndexCollection;
     var attrs:T;
-    var fluidTransform:LiquidTransformer;
     var inited = false;
 
     public function new(attrs:T, w:Widget2D) {
@@ -41,14 +41,9 @@ class ShapeWidget<T:AttribSet> extends Widgetable implements Renderable<T> {
     }
 
     @:once var ratioProvider:AspectRatioProvider;
+    @:once var transformer:LiquidTransformer;
 
     override function init() {
-        var aspectRatio = ratioProvider.getFactorsRef();
-        fluidTransform = new LiquidTransformer(aspectRatio);
-        for (a in Axis2D.keys) {
-            var applier2 = fluidTransform.getAxisApplier(a);
-            w.axisStates[a].addSibling(applier2);
-        }
         createShapes();
         initChildren();
         inited = true;
@@ -86,6 +81,8 @@ class ShapeWidget<T:AttribSet> extends Widgetable implements Renderable<T> {
 
 
     public function render(targets:RenderTargets<T>):Void {
+        if (!inited)
+            return;
         targets.blitIndices(inds, inds.length);
         var pos = 0;
         for (sh in children) {

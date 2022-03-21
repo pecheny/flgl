@@ -4,7 +4,14 @@ import al.al2d.Boundbox;
 import al.core.AxisApplier;
 import al.al2d.Axis2D;
 import al.al2d.Widget2D.AxisCollection2D;
-class Transformer {
+/**
+* Transformer provide a function to translate normalized coordinates (i.e. lacated in [0,1] range) into widget bounds.
+**/
+interface Transformer {
+    public function transformValue(c:Int, input:Float):Float;
+}
+
+class TransformerBase {
     var appliers:AxisCollection2D<TransformatorAxisApplier> = new AxisCollection2D();
     public var pos:Array<Float> = [0, 0];
     public var size:Array<Float> = [1, 1];
@@ -34,9 +41,9 @@ class Transformer {
 
 class TransformatorAxisApplier implements AxisApplier {
     var axisIntex:Axis2D;
-    var target:Transformer;
+    var target:TransformerBase;
 
-    public function new(target:Transformer, c) {
+    public function new(target:TransformerBase, c) {
         this.target = target;
         axisIntex = c;
     }
