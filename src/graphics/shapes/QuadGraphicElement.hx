@@ -4,7 +4,7 @@ import data.IndexCollection;
 import gl.AttribSet;
 import gl.ValueWriter.AttributeWriters;
 import haxe.io.Bytes;
-class QuadGraphicElement<T:AttribSet> {
+class QuadGraphicElement<T:AttribSet> implements Shape {
     public var weights:Array<Array<Float>>;
     var transformators:(Axis2D, Float) -> Float;
 
@@ -28,5 +28,9 @@ class QuadGraphicElement<T:AttribSet> {
             writeAxis(horizontal, i);
             writeAxis(vertical, i);
         }
+    }
+
+    public function getVertsCount():Int {
+        return 4;
     }
 }
