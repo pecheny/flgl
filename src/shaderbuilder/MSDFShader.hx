@@ -120,7 +120,7 @@ class MSDFRenderingElement implements RenderingAspect {
     public function bind(state:GLState<Dynamic>):Void {
         var gl = state.gl;
         texure.bind(state);
-        gl.uniform4f(state.uniforms["color"], 1.0, 0.4, 0.4, 1.0);
+        gl.uniform4f(state.uniforms["color"], 1.0, 1.0, 1.0, 1.0);
     }
 
     public function unbind(gl):Void {
