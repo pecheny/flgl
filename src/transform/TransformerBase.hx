@@ -8,7 +8,7 @@ import al.al2d.Widget2D.AxisCollection2D;
 * Transformer provide a function to translate normalized coordinates (i.e. lacated in [0,1] range) into widget bounds.
 **/
 interface Transformer {
-    public function transformValue(c:Int, input:Float):Float;
+    public function transformValue(c:Axis2D, input:Float):Float;
 }
 
 class TransformerBase {
@@ -36,7 +36,7 @@ class TransformerBase {
 
     public function invalidate() {}
 
-    public function transformValue(c:Int, input:Float):Float {throw "N/A";}
+    public function transformValue(c:Axis2D, input:Float):Float {throw "N/A";}
 }
 
 class TransformatorAxisApplier implements AxisApplier {
