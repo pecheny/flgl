@@ -1,4 +1,5 @@
 package transform;
+import al.utils.Signal;
 import haxe.ds.ReadOnlyArray;
 import al.al2d.Boundbox;
 import al.core.AxisApplier;
@@ -16,6 +17,7 @@ class TransformerBase {
     public var pos:Array<Float> = [0, 0];
     public var size:Array<Float> = [1, 1];
     var aspects:AspectRatio;
+    public var changed(default, null):Signal<Void->Void> = new Signal();
 
     public function getAxisApplier(a:Axis2D):AxisApplier {
         return appliers[a];
@@ -50,6 +52,7 @@ class TransformatorAxisApplier implements AxisApplier {
 
     public function apply(pos:Float, size:Float):Void {
         @:privateAccess target.pos[axisIntex] = pos;
-        @:privateAccess target.size[axisIntex] = size ;
+        @:privateAccess target.size[axisIntex] = size;
+        target.changed.dispatch();
     }
 }
