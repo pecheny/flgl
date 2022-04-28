@@ -79,6 +79,9 @@ class InitMacro {
         initExprs.push(macro 
         if (listenersCount == 0) {
             entity.onContext.remove(_init);
+            if(_inited)
+                return;
+            _inited = true;
             init();
         });
 

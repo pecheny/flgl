@@ -5,6 +5,7 @@ import ec.Entity;
 class Widgetable {
     var w:Widget2D;
     var entity:Entity;
+    var _inited = false;
     public function new(w:Widget2D) {
         this.w = w;
         this.entity = w.entity;
