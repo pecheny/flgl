@@ -37,6 +37,8 @@ class ShaderRegistry implements IShaderRegistry {
     }
 
     public function reg<T:AttribSet>(descr:ShaderDescr<T>) {
+        if (descrs.exists(descr.type))
+            throw 'Already has ${descr.type} shader';
         descrs[descr.type] = descr;
     }
 //
