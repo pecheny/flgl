@@ -3,9 +3,9 @@ import Type;
 import gl.Renderable;
 import gl.GLDisplayObject;
 import gl.AttribSet;
-import ec.CtxBinder.CtxBindable;
+import ec.CtxWatcher.CtxBinder;
 import ec.Entity;
-class Drawcalls implements CtxBindable {
+class Drawcalls implements CtxBinder {
     var map = new GLDisplayObjectsCollection();
 
     public function new() {}

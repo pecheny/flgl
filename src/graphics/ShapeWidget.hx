@@ -5,7 +5,7 @@ import al.al2d.Widget2D;
 import crosstarget.Widgetable;
 import data.aliases.AttribAliases;
 import data.IndexCollection;
-import ec.CtxBinder;
+import ec.CtxWatcher;
 import gl.AttribSet;
 import gl.ec.DrawcallDataProvider;
 import gl.ec.Drawcalls;
@@ -32,7 +32,7 @@ class ShapeWidget<T:AttribSet> extends Widgetable implements Renderable<T> {
         posWriter = attrs.getWriter(AttribAliases.NAME_POSITION);
         var drawcallsData = DrawcallDataProvider.get(attrs, w.entity);
         drawcallsData.views.push(this);
-        new CtxBinder(Drawcalls, w.entity);
+        new CtxWatcher(Drawcalls, w.entity);
     }
 
     public function addChild(shape:Shape) {
