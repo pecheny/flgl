@@ -36,12 +36,13 @@ class MSDFFrag implements ShaderElement {
         return
             ' float vFieldRangeDisplay_px = 120.0;
         			    vec4 sample = texture2D(${MSDFShader.glyphAtlas}, $uv_v);
-						float sigDist =  median(sample.r, sample.g, sample.b) - 0.5;
+        			    float acut = 0.5;
+						float sigDist =  median(sample.r, sample.g, sample.b);
 						// spread field range over 1px for antialiasing
-						float fillAlpha = 	smoothstep(-$smothness, $smothness, sigDist );
+						float fillAlpha = 	smoothstep(acut-$smothness, acut +$smothness, sigDist );
 
-                        float strokeWidth = 0.0;
-						float strokeAlpha =	smoothstep(0., $smothness, sigDist + strokeWidth);
+                        float strokeWidth = 0.;
+						float strokeAlpha =	smoothstep(acut, acut + $smothness, sigDist + strokeWidth);
 						vec4 strokeColor = vec4(0.0, 0.0, 0.0, 1.0);
 
 
