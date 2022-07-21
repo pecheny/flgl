@@ -28,11 +28,12 @@ class ShaderBase {
 
 class TextureShader extends ShaderBase {
     public static var instance(default, null) = new TextureShader();
+
     function new() {
         super(
             [PosPassthrough.instance,
             Uv0Passthrough.instance],
-            [TextureFragment.get(0,0)]
+            [TextureFragment.get(0, 0)]
         );
         trace(vs);
         trace(fs);
@@ -152,3 +153,24 @@ class Uv0Passthrough implements ShaderElement {
     }
 }
 
+class GeneralPassthrough implements ShaderElement {
+    var type:String = "float";
+    var attrName:String;
+    var varName:String;
+
+    public function new(a, v, t = "float") {
+        this.attrName = a;
+        this.varName = v;
+        this.type = t;
+    }
+
+    public function getDecls():String {
+        return '
+                 attribute $type $attrName;
+                 varying $type $varName;';
+    }
+
+    public function getExprs():String {
+        return '$varName = $attrName;';
+    }
+}
