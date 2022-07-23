@@ -63,32 +63,35 @@ class MSDFFrag implements ShaderElement {
 }
 
 
-class LogisticSmoothnessCalculator implements ShaderElement {
-    public static var instance(default, null) = new LogisticSmoothnessCalculator();
+// todo Use linear function for now, check if logistic function has meaning for edge cases
 
-    function new() {}
+//class LogisticSmoothnessCalculator implements ShaderElement {
+//    public static var instance(default, null) = new LogisticSmoothnessCalculator();
+//
+//    function new() {}
+//
+//    public function getDecls():String {
+//        return '
+//                varying float ${MSDFShader.smoothness};
+//                 attribute float ${MSDFSet.NAME_DPI};
+//
+//                 float logist(float x) {
+//                           float p0 = 0.03;
+//                           float k = 0.7;
+//                           float r = 3.;
+//                           float t = (x -80.) / 100. ;
+//                           float ert = exp(r*t);
+//                           return 0.0 +  k -(k * p0 * ert) / (k + p0 *(ert - 1.));
+//    }
+//' ;
+//    }
+//
+//    public function getExprs():String {
+//        return '
+//                   ${MSDFShader.smoothness} = logist(${MSDFSet.NAME_DPI});';
+//    }
+//}
 
-    public function getDecls():String {
-        return '
-                varying float ${MSDFShader.smoothness};
-                 attribute float ${MSDFSet.NAME_DPI};
-
-                 float logist(float x) {
-                           float p0 = 0.3;
-                           float k = 0.5;
-                           float r = 3.;
-                           float t = (x -80.) / 100. ;
-                           float ert = exp(r*t);
-                           return 0.05 +  k -(k * p0 * ert) / (k + p0 *(ert - 1.));
-    }
-' ;
-    }
-
-    public function getExprs():String {
-        return '
-                   ${MSDFShader.smoothness} = logist(${MSDFSet.NAME_DPI});';
-    }
-}
 
 class MSDFShader extends ShaderBase {
     public static var instence = new MSDFShader();
