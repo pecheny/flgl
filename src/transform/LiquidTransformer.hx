@@ -9,7 +9,7 @@ class LiquidTransformer extends TransformerBase {
         var sign = c == 0 ? 1 : -1;
         return
             sign *
-            ((pos[c] + bounds.localToGlobal(a, input) * size[c]) / aspects.getFactor(c) - 1) ;
+            ((pos[c] + bounds.localToGlobal(a, input) * size[c]) / aspects[c] - 1) ;
     }
 
     public static function withLiquidTransform(w:Widget2D, aspectRatio) {

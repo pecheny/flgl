@@ -14,10 +14,12 @@ interface Transformer {
 
 class TransformerBase {
     var appliers:AxisCollection2D<TransformatorAxisApplier> = new AxisCollection2D();
-    public var pos:Array<Float> = [0, 0];
-    public var size:Array<Float> = [1, 1];
-    var aspects:AspectRatio;
-    public var changed(default, null):Signal<Void->Void> = new Signal();
+
+    public var pos(default, null):ReadOnlyArray<Float> = [0,0];
+    public var size(default, null):ReadOnlyArray<Float> = [1,1];
+    public var aspects(default, null):ReadOnlyArray<Float>;
+
+    public var changed(default, null):Signal<Void -> Void> = new Signal();
 
     public function getAxisApplier(a:Axis2D):AxisApplier {
         return appliers[a];
@@ -51,8 +53,10 @@ class TransformatorAxisApplier implements AxisApplier {
     }
 
     public function apply(pos:Float, size:Float):Void {
-        @:privateAccess target.pos[axisIntex] = pos;
-        @:privateAccess target.size[axisIntex] = size;
+        var p:Array<Float> = cast target.pos;
+        p[axisIntex] = pos;
+        var s:Array<Float> = cast target.size;
+        s[axisIntex] = size;
         target.changed.dispatch();
     }
 }
