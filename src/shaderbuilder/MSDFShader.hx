@@ -102,10 +102,10 @@ class MSDFShader extends ShaderBase {
     public static inline var uv = AttribAliases.NAME_UV_0;
 //    public static inline var atlasScale = MSDFSet.NAME_ATLAS_SCALE;
 
-    static var smoothShaderEl :GeneralPassthrough;
+    static var smoothShaderEl:GeneralPassthrough;
 
     public function new() {
-       smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, smoothness);
+        smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, smoothness);
         super(
             [PosPassthrough.instance, Uv0Passthrough.instance, smoothShaderEl],
             [MSDFFrag.instance]
@@ -118,15 +118,23 @@ class MSDFRenderingElement implements RenderingAspect {
     var texure:RenderingAspect;
     var color:GLUniformLocation;
     var inited = false;
+    var rgb:RGB;
+    var r:Float;
+    var g:Float;
+    var b:Float;
 
-    public function new(s, p) {
+
+    public function new(s, p, c = 0xffffff) {
         texure = new TextureBinder(s, p);
+        this.r = ( c >> 16 & 0xFF ) / 255;
+        this.g = ( c >> 8 & 0xFF ) / 255;
+        this.b = ( c & 0xFF ) / 255;
     }
 
     public function bind(state:GLState<Dynamic>):Void {
         var gl = state.gl;
         texure.bind(state);
-        gl.uniform4f(state.uniforms["color"], 1.0, 1.0, 1.0, 1.0);
+        gl.uniform4f(state.uniforms["color"], r, g, b, 1.0);
     }
 
     public function unbind(gl):Void {
