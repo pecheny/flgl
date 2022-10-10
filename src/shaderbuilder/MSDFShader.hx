@@ -1,4 +1,5 @@
 package shaderbuilder;
+import hxColorToolkit.spaces.RGB;
 import gl.GLDisplayObject.GLState;
 import bindings.GLUniformLocation;
 import data.aliases.AttribAliases;
@@ -6,9 +7,7 @@ import data.aliases.VaryingAliases;
 import gl.aspects.RenderingAspect;
 import gl.aspects.TextureBinder;
 import gl.sets.MSDFSet;
-import shaderbuilder.SnaderBuilder.PosPassthrough;
-import shaderbuilder.SnaderBuilder.ShaderBase;
-import shaderbuilder.SnaderBuilder.Uv0Passthrough;
+import shaderbuilder.SnaderBuilder;
 
 
 class MSDFFrag implements ShaderElement {
@@ -103,9 +102,12 @@ class MSDFShader extends ShaderBase {
     public static inline var uv = AttribAliases.NAME_UV_0;
 //    public static inline var atlasScale = MSDFSet.NAME_ATLAS_SCALE;
 
+    static var smoothShaderEl :GeneralPassthrough;
+
     public function new() {
+       smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, smoothness);
         super(
-            [PosPassthrough.instance, Uv0Passthrough.instance, LogisticSmoothnessCalculator.instance],
+            [PosPassthrough.instance, Uv0Passthrough.instance, smoothShaderEl],
             [MSDFFrag.instance]
         );
     }
