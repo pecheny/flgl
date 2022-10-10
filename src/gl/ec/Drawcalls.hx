@@ -17,13 +17,14 @@ class Drawcalls implements CtxBinder {
         map.set(id, layer);
     }
 
-    public function addView<T:AttribSet>(set:T, view:Renderable<T>, layerName = "") {
-        var id = getLayerId(set, layerName);
-        if (map.exists(id))
-            map.get(id).addView(view);
-        else
-            trace("WARN: no gl-layer withid " + id);
-    }
+//    public function addView<T:AttribSet>(set:T, view:Renderable<T>, layerName = "") {
+//        trace("add view " + view);
+//        var id = getLayerId(set, layerName);
+//        if (map.exists(id))
+//            map.get(id).addView(view);
+//        else
+//            trace("WARN: no gl-layer withid " + id);
+//    }
 
 
     public function bind(e:Entity) {
