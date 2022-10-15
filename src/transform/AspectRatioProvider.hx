@@ -1,6 +1,6 @@
 package transform;
-import haxe.ds.ReadOnlyArray;
+import Axis2D.ReadOnlyAVector2D;
 interface AspectRatioProvider {
-    public function getFactorsRef():ReadOnlyArray<Float>;
+    public function getFactorsRef():ReadOnlyAVector2D<Float>;
 }
 

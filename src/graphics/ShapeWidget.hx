@@ -1,6 +1,4 @@
 package graphics;
-import transform.TransformerBase.Transformer;
-import al.al2d.Axis2D;
 import al.al2d.Widget2D;
 import crosstarget.Widgetable;
 import data.aliases.AttribAliases;

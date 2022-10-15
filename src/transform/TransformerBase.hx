@@ -1,10 +1,10 @@
 package transform;
+import macros.AVConstructor;
 import al.utils.Signal;
 import haxe.ds.ReadOnlyArray;
 import al.al2d.Boundbox;
 import al.core.AxisApplier;
-import al.al2d.Axis2D;
-import al.al2d.Widget2D.AxisCollection2D;
+import Axis2D;
 /**
 * Transformer provide a function to translate normalized coordinates (i.e. lacated in [0,1] range) into widget bounds.
 **/
@@ -13,12 +13,11 @@ interface Transformer {
 }
 
 class TransformerBase {
-    var appliers:AxisCollection2D<TransformatorAxisApplier> = new AxisCollection2D();
+    var appliers:AVector2D<TransformatorAxisApplier>;
 
-    public var pos(default, null):ReadOnlyArray<Float> = [0,0];
-    public var size(default, null):ReadOnlyArray<Float> = [1,1];
-    public var aspects(default, null):ReadOnlyArray<Float>;
-
+    public var aspects = AVConstructor.create(Axis2D, 1., 1.).readonly();
+    public var size = AVConstructor.create(Axis2D, 1., 1.).readonly();
+    public var pos = AVConstructor.create(Axis2D, 0., 0.).readonly();
     public var changed(default, null):Signal<Void -> Void> = new Signal();
 
     public function getAxisApplier(a:Axis2D):AxisApplier {
@@ -28,10 +27,9 @@ class TransformerBase {
 //todo make own boundbox, exclude al dependency
     var bounds:Boundbox = new Boundbox();
 
-    public function new(aspects:ReadOnlyArray<Float>) {
+    public function new(aspects:ReadOnlyAVector2D<Float>) {
         this.aspects = aspects;
-        for (k in Axis2D.keys)
-            appliers[k] = new TransformatorAxisApplier(this, k);
+        appliers = AVConstructor.factoryCreate(k -> new TransformatorAxisApplier(this, k));
     }
 
     public function setBounds(x, y, w, h) {
@@ -53,9 +51,9 @@ class TransformatorAxisApplier implements AxisApplier {
     }
 
     public function apply(pos:Float, size:Float):Void {
-        var p:Array<Float> = cast target.pos;
+        var p:AVector2D<Float> = cast target.pos;
         p[axisIntex] = pos;
-        var s:Array<Float> = cast target.size;
+        var s:AVector2D<Float> = cast target.size;
         s[axisIntex] = size;
         target.changed.dispatch();
     }
