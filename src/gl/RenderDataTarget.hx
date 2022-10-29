@@ -1,4 +1,5 @@
 package gl;
+import bindings.ArrayBufferView;
 import data.DataType;
 import utils.DynamicBytes;
 import haxe.io.Bytes;
@@ -13,7 +14,7 @@ class RenderDataTarget {
         return extensible.bytes;
     }
 
-    public function getView() {
+    public function getView():ArrayBufferView {
         return extensible.getView();
     }
 

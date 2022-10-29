@@ -3,8 +3,10 @@ typedef ArrayBufferView =
 #if nme
     nme.utils.ArrayBufferView;
 #elseif lime
-    lime.utils.ArrayBufferView
+    lime.utils.ArrayBufferView;
+#elseif js
+    js.lib.ArrayBufferView;
 #else
-    Dynamic
+    Dynamic;
 #end
     

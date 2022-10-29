@@ -1,18 +1,18 @@
 package gl;
 #if lime
-import lime.graphics.opengl.GLUniformLocation;
-import lime.graphics.opengl.GL;
 import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
+import openfl.events.Event;
+import openfl.display.DisplayObject;
 #end
 import gl.aspects.RenderingAspect;
 import bindings.GLBuffer;
 import bindings.GLProgram;
-import bindings.WebGLRenderContext;
+import bindings.WebGLRenderContext as GL;
+import bindings.WebGLRenderContext ;
+import bindings.GLUniformLocation;
 import gl.AttribSet;
 import data.ShadersAttrs;
-import openfl.events.Event;
-import openfl.display.DisplayObject;
 
 #if nme
          import nme.gl.GL as gl;
@@ -42,7 +42,10 @@ class GLState<T:AttribSet> {
     }
 }
 
-class GLDisplayObject<T:AttribSet> extends DisplayObject {
+class GLDisplayObject<T:AttribSet> 
+#if openfl extends DisplayObject 
+    #end
+ {
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
     var indicesBuffer:GLBuffer;
@@ -58,13 +61,15 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     var shaderFactory:WebGLRenderContext -> GLState<T>;
 
     public function new(set:T, shaderFactory, aspect:RenderingAspect) {
-        super();
         this.renderingAspect = aspect;
         this.set = set;
         this.shaderFactory = shaderFactory;
         this.targets = new RenderTargets(set);
+        #if openfl
+        super();
         addEventListener(RenderEvent.RENDER_OPENGL, render);
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
+        #end
     }
 
     var err:String;
@@ -78,7 +83,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         indicesBuffer = gl.createBuffer();
         inited = true;
     }
-
+#if openfl
     function onEnterFrame(e) {
         invalidate();
     }
@@ -88,6 +93,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         invalidate();
         #end
     }
+    #end
 
     public function addView(v:Renderable<T>) {
         children.push(v) ;
@@ -98,9 +104,9 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
     }
 
 
-    public function render(event:RenderEvent) {
-        var renderer:OpenGLRenderer = cast event.renderer;
-        init(renderer.gl);
+    public function render(gl:WebGLRenderContext) {
+        // var renderer:OpenGLRenderer = cast event.renderer;
+        init(gl);
 
         targets.flush();
 
@@ -109,7 +115,7 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         }
 
         var state:GLState<T> = shaderFactory(gl);
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
         if (renderingAspect != null)
@@ -118,14 +124,14 @@ class GLDisplayObject<T:AttribSet> extends DisplayObject {
         if (viewport != null)
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
-        gl.bufferData(gl.ARRAY_BUFFER, targets.verts.getView(), gl.STREAM_DRAW);
+        gl.bufferData(GL.ARRAY_BUFFER, targets.verts.getView(), GL.STREAM_DRAW);
         gl.blendFunc(srcAlpha, dstAlpha);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), gl.DYNAMIC_DRAW);
-        gl.drawElements(gl.TRIANGLES, targets.indsCount(), gl.UNSIGNED_SHORT, 0);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indicesBuffer);
+        gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), GL.DYNAMIC_DRAW);
+        gl.drawElements(GL.TRIANGLES, targets.indsCount(), GL.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, null);
         gl.useProgram(null);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(GL.ARRAY_BUFFER, null);
         if (renderingAspect != null)
             renderingAspect.unbind(state);
     }

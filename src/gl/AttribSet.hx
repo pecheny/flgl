@@ -4,6 +4,7 @@ import data.ShadersAttrs;
 import data.AttributeState;
 import data.AttributeDescr;
 import bindings.WebGLRenderContext;
+import bindings.WebGLRenderContext as GL;
 import data.DataType;
 import gl.ValueWriter;
 #if (cpp || js || hl)
@@ -108,10 +109,10 @@ class AttribSet {
 
     public inline function getGlType(type:DataType, gl:WebGLRenderContext) {
         return switch type {
-            case int32 : gl.INT;
-            case uint8 : gl.UNSIGNED_BYTE;
-            case uint16 : gl.UNSIGNED_SHORT;
-            case float32 : gl.FLOAT;
+            case int32 : GL.INT;
+            case uint8 : GL.UNSIGNED_BYTE;
+            case uint16 : GL.UNSIGNED_SHORT;
+            case float32 : GL.FLOAT;
         }
     }
     #end

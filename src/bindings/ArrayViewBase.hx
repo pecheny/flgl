@@ -1,2 +1,5 @@
 package bindings;
-typedef ArrayViewBase = #if js js.lib.Uint8Array #else lime.utils.ArrayBufferView #end
+
+import js.lib.ArrayBufferView;
+
+typedef ArrayViewBase = #if js js.lib.ArrayBufferView #else lime.utils.ArrayBufferView #end

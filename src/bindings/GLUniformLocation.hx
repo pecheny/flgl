@@ -3,7 +3,7 @@ typedef GLUniformLocation =
 #if lime
 lime.graphics.opengl.GLUniformLocation;
 #elseif js
-js.html.webgl.GLUniformLocation;
+js.html.webgl.UniformLocation;
 #else
 Dynamic;
 #end
