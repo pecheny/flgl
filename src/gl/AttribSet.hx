@@ -4,7 +4,7 @@ import data.ShadersAttrs;
 import data.AttributeState;
 import data.AttributeDescr;
 import bindings.WebGLRenderContext;
-import bindings.WebGLRenderContext as GL;
+import bindings.GL;
 import data.DataType;
 import gl.ValueWriter;
 #if (cpp || js || hl)

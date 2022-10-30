@@ -4,11 +4,12 @@ import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
 import openfl.events.Event;
 import openfl.display.DisplayObject;
+#else
 #end
+import bindings.GL;
 import gl.aspects.RenderingAspect;
 import bindings.GLBuffer;
 import bindings.GLProgram;
-import bindings.WebGLRenderContext as GL;
 import bindings.WebGLRenderContext ;
 import bindings.GLUniformLocation;
 import gl.AttribSet;
@@ -42,10 +43,9 @@ class GLState<T:AttribSet> {
     }
 }
 
-class GLDisplayObject<T:AttribSet> 
-#if openfl extends DisplayObject 
-    #end
- {
+class GLDisplayObject<T:AttribSet>
+#if openfl extends DisplayObject
+    #end {
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
     var indicesBuffer:GLBuffer;
@@ -67,7 +67,7 @@ class GLDisplayObject<T:AttribSet>
         this.targets = new RenderTargets(set);
         #if openfl
         super();
-        addEventListener(RenderEvent.RENDER_OPENGL, render);
+        addEventListener(RenderEvent.RENDER_OPENGL, onRender);
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
         #end
     }
@@ -93,6 +93,10 @@ class GLDisplayObject<T:AttribSet>
         invalidate();
         #end
     }
+    function onRender(event) {
+        var renderer:OpenGLRenderer = cast event.renderer;
+        render(renderer.gl);
+    }
     #end
 
     public function addView(v:Renderable<T>) {
@@ -105,7 +109,6 @@ class GLDisplayObject<T:AttribSet>
 
 
     public function render(gl:WebGLRenderContext) {
-        // var renderer:OpenGLRenderer = cast event.renderer;
         init(gl);
 
         targets.flush();
