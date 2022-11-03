@@ -60,6 +60,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
     public var dstAlpha = GL.ONE_MINUS_SRC_ALPHA;
 
     var shaderFactory:WebGLRenderContext -> GLState<T>;
+    var state:GLState<T>;
 
     public function new(set:T, shaderFactory, aspect:RenderingAspect) {
         this.renderingAspect = aspect;
@@ -82,6 +83,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
         this.gl = gl;
         buffer = gl.createBuffer();
         indicesBuffer = gl.createBuffer();
+        state = shaderFactory(gl);
         inited = true;
     }
 #if openfl
@@ -118,7 +120,6 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
             child.render(targets);
         }
 
-        var state:GLState<T> = shaderFactory(gl);
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
