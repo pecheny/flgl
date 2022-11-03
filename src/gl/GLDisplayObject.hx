@@ -12,6 +12,7 @@ import bindings.GLBuffer;
 import bindings.GLProgram;
 import bindings.WebGLRenderContext ;
 import bindings.GLUniformLocation;
+import bindings.GLDrawcall;
 import gl.AttribSet;
 import data.ShadersAttrs;
 
@@ -43,7 +44,7 @@ class GLState<T:AttribSet> {
     }
 }
 
-class GLDisplayObject<T:AttribSet>
+class GLDisplayObject<T:AttribSet> implements GLDrawcall
 #if openfl extends DisplayObject
     #end {
     var children:Array<Renderable<T>> = [];
