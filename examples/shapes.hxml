@@ -1,0 +1,4 @@
+common.hxml
+-main Shapes
+-cp ../backends/html
+--js out/main.js
