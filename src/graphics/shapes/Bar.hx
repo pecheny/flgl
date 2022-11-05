@@ -1,26 +1,24 @@
 package graphics.shapes;
-import al.al2d.Axis2D;
-import al.al2d.Widget2D.AxisCollection2D;
-import al.al2d.Widget2D;
+import Axis2D;
 import data.IndexCollection;
 import gl.ValueWriter;
 import graphics.shapes.RectWeights;
 import haxe.ds.ReadOnlyArray;
 import haxe.io.Bytes;
+import macros.AVConstructor;
 import transform.AspectRatio;
 
 class Bar implements Shape {
-    var axis:AxisCollection2D<BarAxisBase> = new AxisCollection2D();
+    var axis:ReadOnlyAVector2D<BarAxisBase>;
     var transformators:(Axis2D, Float) -> Float;
 
     public function new(att, xt, yt, transformators) {
         this.transformators = transformators;
-        axis[horizontal] = xt;
-        axis[vertical] = yt;
+        axis = AVConstructor.create(xt, yt);
     }
 
     public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0) {
-        for (a in Axis2D.keys) {
+        for (a in Axis2D) {
             axis[a].writePositions(a, transformators, target, writer, vertOffset);
         }
     }
@@ -35,12 +33,10 @@ class Bar implements Shape {
 }
 
 class BarContainer {
-    public var axis:AxisCollection2D<BarAxisType>;
+    public var axis:ReadOnlyAVector2D<BarAxisType>;
 
     public function new(x:BarAxisType, y:BarAxisType) {
-        axis = [
-            horizontal => x,
-            vertical => y ];
+        axis = AVConstructor.create(Axis2D, x, y);
     }
 }
 
@@ -76,7 +72,7 @@ class FixedThiknessTransformApplier extends BarAxisBase {
     var weights:ReadOnlyArray<Float>;
     public var pos:Float = 0;
     public var thikness:Float = 0.1;
-    var lineScales:ReadOnlyArray<Float>;
+    var lineScales:ReadOnlyAVector2D<Float>;
 
 
     public function new(weights, lineScales) {
@@ -116,9 +112,9 @@ class PortionTransformApplier extends BarAxisBase {
 }
 
 class BarsBuilder {
-    var lineScales:ReadOnlyArray<Float>;
+    var lineScales:ReadOnlyAVector2D<Float>;
 
-    public function new(aspectRatio:AspectRatio, lineScales:ReadOnlyArray<Float>) {
+    public function new(aspectRatio:AspectRatio, lineScales:ReadOnlyAVector2D<Float>) {
         this.lineScales = lineScales;
     }
 
@@ -156,7 +152,7 @@ class BarAnimationUtils {
                 case _:
             }
         }
-        for (a in Axis2D.keys) {
+        for (a in Axis2D) {
             switch bar.axis[a] {
                 case Portion(slot):
                     return (t) -> slot.instance.end = t * slot.descr.end;
