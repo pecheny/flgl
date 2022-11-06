@@ -1,6 +1,15 @@
 package graphics;
 
-class ShapeRenderer {
+import data.aliases.AttribAliases;
+import data.IndexCollection;
+import gl.AttribSet;
+import gl.Renderable;
+import gl.RenderTargets;
+import gl.ValueWriter.AttributeWriters;
+import graphics.shapes.Shape;
+import haxe.io.Bytes;
+
+class ShapeRenderer<T:AttribSet> implements Renderable<T> {
     var buffer:Bytes;
     var posWriter:AttributeWriters;
     var children:Array<Shape> = [];
@@ -9,7 +18,7 @@ class ShapeRenderer {
     var attrs:T;
     var inited = false;
 
-    public function new(attrs:T:Widget2D) {
+    public function new(attrs:T) {
         this.attrs = attrs;
         posWriter = attrs.getWriter(AttribAliases.NAME_POSITION);
     }
@@ -19,21 +28,7 @@ class ShapeRenderer {
         children.push(shape);
     }
 
-    @:once var ratioProvider:AspectRatioProvider;
-    @:once var transformer:LiquidTransformer;
-
-    override function init() {
-        createShapes();
-        initChildren();
-        inited = true;
-        onShapesDone();
-    }
-
-    function createShapes() {}
-
-    function onShapesDone() {}
-
-    function initChildren() {
+    public function initChildren() {
         var indsCount = 0;
         vertsCount = 0;
         for (sh in children) {
@@ -42,6 +37,7 @@ class ShapeRenderer {
         }
         buffer = Bytes.alloc(vertsCount * attrs.stride);
         inds = new IndexCollection(indsCount);
+        inited = true;
         fillIndices();
     }
 
@@ -69,6 +65,11 @@ class ShapeRenderer {
             pos += sh.getVertsCount();
         }
         targets.blitVerts(buffer, vertsCount);
+    }
+
+    public function getVertCount():Int {
+        if (!inited) throw "wrong";
+        return vertsCount;
     }
 
     function printVerts(n) {
