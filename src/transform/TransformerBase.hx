@@ -1,16 +1,12 @@
 package transform;
-import macros.AVConstructor;
-import al.utils.Signal;
-import haxe.ds.ReadOnlyArray;
 import al.al2d.Boundbox;
 import al.core.AxisApplier;
+import al.utils.Signal;
 import Axis2D;
+import macros.AVConstructor;
 /**
 * Transformer provide a function to translate normalized coordinates (i.e. lacated in [0,1] range) into widget bounds.
 **/
-interface Transformer {
-    public function transformValue(c:Axis2D, input:Float):Float;
-}
 
 class TransformerBase {
     var appliers:AVector2D<TransformatorAxisApplier>;

@@ -1,17 +1,13 @@
 package graphics;
 import al.al2d.Widget2D;
 import crosstarget.Widgetable;
-import data.aliases.AttribAliases;
-import data.IndexCollection;
 import ec.CtxWatcher;
 import gl.AttribSet;
 import gl.ec.DrawcallDataProvider;
 import gl.ec.Drawcalls;
 import gl.Renderable;
 import gl.RenderTargets;
-import gl.ValueWriter.AttributeWriters;
 import graphics.shapes.Shape;
-import haxe.io.Bytes;
 import transform.AspectRatioProvider;
 import transform.LiquidTransformer;
 
@@ -39,6 +35,7 @@ class ShapeWidget<T:AttribSet> extends Widgetable implements Renderable<T> {
     @:once var transformer:LiquidTransformer;
 
     override function init() {
+        shapeRenderer.transform = transformer.transformValue;
         createShapes();
         shapeRenderer.initChildren();
         inited = true;

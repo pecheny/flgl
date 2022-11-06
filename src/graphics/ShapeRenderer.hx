@@ -10,7 +10,7 @@ import graphics.shapes.Shape;
 import haxe.io.Bytes;
 
 class ShapeRenderer<T:AttribSet> implements Renderable<T> {
-    var buffer:Bytes;
+    public var buffer(default, null):Bytes;
     var posWriter:AttributeWriters;
     var children:Array<Shape> = [];
     var vertsCount:Int = 0;
@@ -54,6 +54,7 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> {
         }
     }
 
+    public dynamic function transform(a:Axis2D, v) return v;
 
     public function render(targets:RenderTargets<T>):Void {
         if (!inited)
@@ -61,7 +62,7 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> {
         targets.blitIndices(inds, inds.length);
         var pos = 0;
         for (sh in children) {
-            sh.writePostions(buffer, posWriter, pos);
+            sh.writePostions(buffer, posWriter, pos, transform);
             pos += sh.getVertsCount();
         }
         targets.blitVerts(buffer, vertsCount);

@@ -7,10 +7,8 @@ import gl.ValueWriter.AttributeWriters;
 import haxe.io.Bytes;
 class QuadGraphicElement<T:AttribSet> implements Shape {
     public var weights:AVector2D<Array<Float>>;
-    var transformators:(Axis2D, Float) -> Float;
 
-    public function new(attrs:T, transformators) {
-        this.transformators = transformators;
+    public function new(attrs:T) {
         weights = AVConstructor.create(RectWeights.weights[horizontal].copy(), RectWeights.weights[vertical].copy());
     }
 
@@ -18,10 +16,10 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
         return IndexCollections.QUAD_ODD;
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0) {
+    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
         inline function writeAxis(axis:Axis2D, i) {
             var wg = weights[axis][i];
-            writer[cast axis].setValue(target, vertOffset + i, transformators(axis, wg));
+            writer[cast axis].setValue(target, vertOffset + i, transformer(axis, wg));
         }
         for (i in 0...4) {
             writeAxis(horizontal, i);

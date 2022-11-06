@@ -10,16 +10,14 @@ import transform.AspectRatio;
 
 class Bar implements Shape {
     var axis:ReadOnlyAVector2D<BarAxisBase>;
-    var transformators:(Axis2D, Float) -> Float;
 
-    public function new(att, xt, yt, transformators) {
-        this.transformators = transformators;
+    public function new(att, xt, yt) {
         axis = AVConstructor.create(xt, yt);
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0) {
+    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
         for (a in Axis2D) {
-            axis[a].writePositions(a, transformators, target, writer, vertOffset);
+            axis[a].writePositions(a, transformer, target, writer, vertOffset);
         }
     }
 
@@ -138,8 +136,8 @@ class BarsBuilder {
     public function create(attrs, tr, container:BarContainer) {
         return new Bar(attrs,
         createAxis(horizontal, container.axis[horizontal]),
-        createAxis(vertical, container.axis[vertical]),
-        tr);
+        createAxis(vertical, container.axis[vertical])
+        );
     }
 }
 

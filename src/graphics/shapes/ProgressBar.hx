@@ -7,10 +7,8 @@ import al.al2d.Axis2D;
 import gl.AttribSet;
 class ProgressBar <T:AttribSet> implements Shape {
     public var weights:Array<Array<Float>>;
-    var transformators:(Axis2D, Float) -> Float;
 
-    public function new(attrs:T, transformators) {
-        this.transformators = transformators;
+    public function new(attrs:T) {
         weights = [];
         weights[0] = RectWeights.weights[horizontal].copy();
         weights[1] = RectWeights.weights[vertical].copy();
@@ -27,10 +25,10 @@ class ProgressBar <T:AttribSet> implements Shape {
         }
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0) {
+    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, t) {
         inline function writeAxis(axis:Axis2D, i) {
             var wg = weights[axis][i];
-            writer[axis].setValue(target, vertOffset + i, transformators(axis, wg));
+            writer[axis].setValue(target, vertOffset + i, t(axis, wg));
         }
         for (i in 0...4) {
             writeAxis(horizontal, i);
