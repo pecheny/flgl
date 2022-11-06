@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "examples",
+			"path": "examples"
+		},
+		{
+			"name": "flgl",
+			"path": "."
+		}
+	],
+    "settings": {}
+}
