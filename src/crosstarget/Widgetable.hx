@@ -1,11 +1,10 @@
 package crosstarget;
 import al.al2d.Widget2D;
 import ec.Entity;
-@:autoBuild(macros.InitMacro.build())
+@:autoBuild(ec.macros.InitMacro.build())
 class Widgetable {
     var w:Widget2D;
     var entity:Entity;
-    var _inited = false;
     public function new(w:Widget2D) {
         this.w = w;
         this.entity = w.entity;
