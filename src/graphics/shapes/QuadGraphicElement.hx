@@ -19,7 +19,7 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
     public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
         inline function writeAxis(axis:Axis2D, i) {
             var wg = weights[axis][i];
-            writer[cast axis].setValue(target, vertOffset + i, transformer(axis, wg));
+            writer[axis].setValue(target, vertOffset + i, transformer(axis, wg));
         }
         for (i in 0...4) {
             writeAxis(horizontal, i);
