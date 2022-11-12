@@ -133,7 +133,7 @@ class BarsBuilder {
         }
     }
 
-    public function create(attrs, tr, container:BarContainer) {
+    public function create(attrs, container:BarContainer) {
         return new Bar(attrs,
         createAxis(horizontal, container.axis[horizontal]),
         createAxis(vertical, container.axis[vertical])
