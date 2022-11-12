@@ -130,6 +130,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
             gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
         gl.bufferData(GL.ARRAY_BUFFER, targets.verts.getView(), GL.STREAM_DRAW);
+        gl.enable(GL.BLEND);
         gl.blendFunc(srcAlpha, dstAlpha);
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indicesBuffer);
         gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), GL.DYNAMIC_DRAW);
