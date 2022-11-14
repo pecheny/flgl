@@ -5,12 +5,16 @@ import js.html.CanvasElement;
 import bindings.WebGLRenderContext;
 import bindings.GLDrawcall;
 import bindings.GL;
-import Axis2D;
+import utils.Signal;
+
 class WebGlRenderer {
     var gl:WebGLRenderContext;
     var canvas:CanvasElement;
     var children:Array<GLDrawcall> = [];
+    public var width(default, null):Int = 0;
+    public var height(default, null):Int = 0;
 
+    public var onResize(default, null):Signal<Int->Int->Void> = new Signal();
     public function new() {
         canvas = Browser.document.createCanvasElement();
         Browser.document.body.appendChild(canvas);
@@ -21,20 +25,22 @@ class WebGlRenderer {
             return;
         }
         this.gl = gl;
-        wnd.addEventListener("resize", onResize);
-        onResize();
+        wnd.addEventListener("resize", onResizeHandler);
+        onResizeHandler();
     }
 
     public function addChild(ch:GLDrawcall) {
         children.push(ch);
     }
 
-    function onResize() {
+
+    function onResizeHandler() {
         var wnd = Browser.window;
-        var height = wnd.innerHeight; // wnd.document.documentElement.clientHeight; // wnd.innerWidth;
+        height = wnd.innerHeight; // wnd.document.documentElement.clientHeight; // wnd.innerWidth;
         canvas.height = height;
-        var width = wnd.document.documentElement.clientWidth; // wnd.innerWidth;
+        width = wnd.document.documentElement.clientWidth; // wnd.innerWidth;
         canvas.width = width;
+        onResize.dispatch(width, height);
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
         gl.viewport(0, 0, width, height);
@@ -42,7 +48,7 @@ class WebGlRenderer {
     }
 
     public function render() {
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clearColor(0.0, 0.0, 0.0, 1.);
         gl.clear(GL.COLOR_BUFFER_BIT);
         for (ch in children)
             ch.render(gl);
