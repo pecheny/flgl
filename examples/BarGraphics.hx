@@ -10,6 +10,8 @@ import graphics.shapes.Bar;
 import transform.AspectRatioProvider;
 import transform.LineThicknessCalculator;
 import transform.Resizable;
+import transform.LiquidTransformer;
+import transform.ProportionalTransformer;
 
 using macros.AVConstructor;
 
@@ -19,10 +21,21 @@ class BarGraphics {
         var resizer = new StageResizer();
         root.onResize.listen(resizer.resize);
         resizer.resize(root.width, root.height);
+
+
         var gldo = new GLDisplayObject(ColorSet.instance, create, null);
         var shapes = new ShapeRenderer(ColorSet.instance);
         createShapes(resizer, shapes);
         shapes.initChildren();
+        var liquidTr = new LiquidTransformer(resizer.getFactorsRef());
+        // liquidTr.setBounds(0.5, 0.5, 1, 1);
+        liquidTr.setBounds(0,0, 0.5, 0.5);
+        resizer.addResizable(liquidTr);
+        shapes.transform = liquidTr.transformValue;
+        // var propTr = new ProportionalTransformer(resizer.getFactorsRef());
+        // propTr.setBounds(-0.5,-0.5, 1,1);
+        // resizer.addResizable(propTr);
+        // shapes.transform = propTr.transformValue;
         fillColor(shapes);
         gldo.addView(shapes);
         root.addChild(gldo);

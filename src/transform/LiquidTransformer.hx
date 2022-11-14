@@ -1,7 +1,7 @@
 package transform;
-import al.al2d.Widget2D;
-import al.al2d.Boundbox;
+// import al.al2d.Widget2D;
 import Axis2D;
+import transform.Boundbox;
 using transform.LiquidTransformer.BoundboxConverters;
 class LiquidTransformer extends TransformerBase {
     override public function transformValue(c:Axis2D, input:Float) {
@@ -11,15 +11,15 @@ class LiquidTransformer extends TransformerBase {
             ((pos[c] + bounds.localToGlobal(c, input) * size[c]) / aspects[c] - 1) ;
     }
 
-    public static function withLiquidTransform(w:Widget2D, aspectRatio) {
-        var transformer = new LiquidTransformer(aspectRatio);
-        for (a in Axis2D) {
-            var applier2 = transformer.getAxisApplier(a);
-            w.axisStates[a].addSibling(applier2);
-        }
-        w.entity.addComponent(transformer);
-        return w;
-    }
+    // public static function withLiquidTransform(w:Widget2D, aspectRatio) {
+    //     var transformer = new LiquidTransformer(aspectRatio);
+    //     for (a in Axis2D) {
+    //         var applier2 = transformer.getAxisApplier(a);
+    //         w.axisStates[a].addSibling(applier2);
+    //     }
+    //     w.entity.addComponent(transformer);
+    //     return w;
+    // }
 }
 
 class BoundboxConverters {

@@ -1,23 +1,21 @@
 package transform;
-import al.al2d.Axis2D;
-
+import Axis2D;
 class ProportionalTransformer extends TransformerBase {
     var localScale = 1.;
 
-    override public function transformValue(c:Axis2D, input:Float) {
-        var a = Axis2D.fromInt(c);
-        var sign = c == 0 ? 1 : -1;
-        var free = size[c] - bounds.size[a] * localScale;
+    override public function transformValue(a:Axis2D, input:Float) {
+        var sign = a == 0 ? 1 : -1;
+        var free = size[a] - bounds.size[a] * localScale;
         var lp = (input - bounds.pos[a]) * localScale + free / 2;
         return
-            ((pos[c] + lp) / aspects.getFactor(c) - 1) * sign;
+            ((pos[a] + lp) / aspects[a] - 1) * sign;
     }
 
 
     override public function invalidate() {
         localScale = 9999.;
-        for (a in Axis2D.keys) {
-            var _scale = size[a.toInt()] / bounds.size[a];
+        for (a in Axis2D) {
+            var _scale = size[a] / bounds.size[a];
             if (_scale < localScale)
                 localScale = _scale;
         }
