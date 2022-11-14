@@ -2,4 +2,5 @@
 -cp ../src
 -lib taxis
 -D analyzer-optimize
+-D js-source-map
 -dce full
