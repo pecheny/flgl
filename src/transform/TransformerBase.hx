@@ -9,7 +9,7 @@ import utils.Signal;
 class TransformerBase implements Resizable {
     // var appliers:AVector2D<TransformatorAxisApplier>;
 
-    public var aspects = AVConstructor.create(Axis2D, 1., 1.).readonly();
+    @:isVar public var aspects(get, null) = AVConstructor.create(Axis2D, 1., 1.).readonly();
     var _size = AVConstructor.create(Axis2D, 1., 1.);
     var _pos = AVConstructor.create(Axis2D, 0., 0.);
     public var size(get,null):ReadOnlyAVector2D<Float>;
@@ -63,5 +63,9 @@ class TransformerBase implements Resizable {
 
     function get_pos():ReadOnlyAVector2D<Float> {
         return _pos;
+    }
+
+    function get_aspects():Dynamic {
+        return aspects;
     }
 }
