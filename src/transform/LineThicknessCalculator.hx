@@ -6,6 +6,7 @@ package transform;
  *  @see transform.AspectRatio
  *  LineScaleCalcularor registers on widget axis state so be sure to create it before registering dependent redraw.
 **/
+import a2d.AspectRatio;
 import Axis2D;
 import macros.AVConstructor;
 

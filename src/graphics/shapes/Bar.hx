@@ -6,7 +6,7 @@ import graphics.shapes.RectWeights;
 import haxe.ds.ReadOnlyArray;
 import haxe.io.Bytes;
 import macros.AVConstructor;
-import transform.AspectRatio;
+import a2d.AspectRatio;
 
 class Bar implements Shape {
     var axis:ReadOnlyAVector2D<BarAxisBase>;
