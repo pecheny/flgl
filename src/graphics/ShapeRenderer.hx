@@ -1,5 +1,6 @@
 package graphics;
 
+import utils.Signal;
 import data.aliases.AttribAliases;
 import data.IndexCollection;
 import gl.AttribSet;
@@ -9,8 +10,9 @@ import gl.ValueWriter.AttributeWriters;
 import graphics.shapes.Shape;
 import haxe.io.Bytes;
 
-class ShapeRenderer<T:AttribSet> implements Renderable<T> {
+class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffer<T> {
     public var buffer(default, null):Bytes;
+    public var onInit(default, null):Signal<Void -> Void> = new Signal();
     var posWriter:AttributeWriters;
     var children:Array<Shape> = [];
     var vertsCount:Int = 0;
@@ -37,8 +39,9 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> {
         }
         buffer = Bytes.alloc(vertsCount * attrs.stride);
         inds = new IndexCollection(indsCount);
-        inited = true;
         fillIndices();
+        inited = true;
+        onInit.dispatch();
     }
 
     function fillIndices() {
@@ -77,4 +80,12 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> {
         for (i in 0...n)
             trace(i + " " + attrs.printVertex(buffer, i));
     }
-} 
+
+    public function getBuffer():Bytes {
+        return buffer;
+    }
+
+    public function isInited():Bool {
+        return inited;
+    }
+}
