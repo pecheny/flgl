@@ -1,4 +1,5 @@
 package gl;
+import data.aliases.AttribAliases;
 import haxe.io.Bytes;
 import data.ShadersAttrs;
 import data.AttributeState;
@@ -162,6 +163,19 @@ class AttribSet {
     function createWriters() {
         for (descr in attributes) {
             writers[descr.name] = createWritersForAttribute(descr);
+        }
+    }
+
+    public inline function writeColor(buffer, color, first, count, alpha = 255) {
+        var writers = getWriter(AttribAliases.NAME_COLOR_IN);
+        var r = color >> 16;
+        var g = (color & 0x00ff00) >> 8;
+        var b = (color & 0x0000ff);
+        for (vert in first...first + count) {
+            writers[0].setValue(buffer, vert, r);
+            writers[1].setValue(buffer, vert, g);
+            writers[2].setValue(buffer, vert, b);
+            writers[3].setValue(buffer, vert, alpha);
         }
     }
 }
