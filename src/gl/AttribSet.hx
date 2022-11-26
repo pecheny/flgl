@@ -168,7 +168,7 @@ class AttribSet {
 
     public inline function writeColor(buffer, color, first, count, alpha = 255) {
         var writers = getWriter(AttribAliases.NAME_COLOR_IN);
-        var r = color >> 16;
+        var r = (color & 0xff0000) >> 16;
         var g = (color & 0x00ff00) >> 8;
         var b = (color & 0x0000ff);
         for (vert in first...first + count) {
