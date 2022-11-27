@@ -25,12 +25,12 @@ class BarGraphics {
         var shapes = new ShapeRenderer(ColorSet.instance);
         createShapes(resizer, shapes);
         shapes.initChildren();
-        var liquidTr = new LiquidTransformer(resizer.getFactorsRef());
+        var liquidTr = new LiquidTransformer(resizer.getAspectRatio());
         // liquidTr.setBounds(0.5, 0.5, 1, 1);
         liquidTr.setBounds(0,0, 0.5, 0.5);
         resizer.addResizable(liquidTr);
         shapes.transform = liquidTr.transformValue;
-        // var propTr = new ProportionalTransformer(resizer.getFactorsRef());
+        // var propTr = new ProportionalTransformer(resizer.getAspectRatio());
         // propTr.setBounds(-0.5,-0.5, 1,1);
         // resizer.addResizable(propTr);
         // shapes.transform = propTr.transformValue;
@@ -41,9 +41,9 @@ class BarGraphics {
     }
 
     static function createShapes(root:StageResizer, shapes) {
-        var lineCalc = new LineThicknessCalculator(root.getFactorsRef());
+        var lineCalc = new LineThicknessCalculator(root.getAspectRatio());
         root.addResizable(lineCalc);
-        var bb = new BarsBuilder(root.getFactorsRef(), lineCalc.lineScales());
+        var bb = new BarsBuilder(root.getAspectRatio(), lineCalc.lineScales());
         var elements = [
             new BarContainer(FixedThikness(new BarAxisSlot({pos: 1., thikness: 1.}, null)), Portion(new BarAxisSlot({start: 0., end: 1.}, null))),
             new BarContainer(FixedThikness(new BarAxisSlot({pos: 0., thikness: 1.}, null)), Portion(new BarAxisSlot({start: 0., end: 1.}, null))),
@@ -149,7 +149,7 @@ class StageResizer implements AspectRatioProvider {
         return aspects[cmp];
     }
 
-    public function getFactorsRef():ReadOnlyAVector2D<Float> {
+    public function getAspectRatio():ReadOnlyAVector2D<Float> {
         return aspects;
     }
 
