@@ -7,11 +7,10 @@ import gl.GLDisplayObject;
 import gl.sets.ColorSet;
 import graphics.ShapeRenderer;
 import graphics.shapes.Bar;
-import transform.AspectRatioProvider;
+import a2d.AspectRatioProvider;
 import transform.LineThicknessCalculator;
 import transform.Resizable;
 import transform.LiquidTransformer;
-import transform.ProportionalTransformer;
 
 using macros.AVConstructor;
 
@@ -21,7 +20,6 @@ class BarGraphics {
         var resizer = new StageResizer();
         root.onResize.listen(resizer.resize);
         resizer.resize(root.width, root.height);
-
 
         var gldo = new GLDisplayObject(ColorSet.instance, create, null);
         var shapes = new ShapeRenderer(ColorSet.instance);

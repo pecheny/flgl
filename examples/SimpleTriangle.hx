@@ -6,7 +6,7 @@ import gl.GLDisplayObject;
 import data.IndexCollection;
 import data.aliases.AttribAliases;
 import gl.AttribSet;
-import gl.RenderTargets;
+import gl.RenderTarget;
 import gl.Renderable;
 import gl.sets.ColorSet;
 import haxe.io.Bytes;
@@ -75,7 +75,7 @@ class Triangle<T:AttribSet> implements Renderable<T> {
         }
     }
 
-    public function render(targets:RenderTargets<T>):Void {
+    public function render(targets:RenderTarget<T>):Void {
         targets.blitIndices(inds, inds.length);
         targets.blitVerts(buffer, vertsCount);
     }

@@ -18,10 +18,10 @@ class Shapes {
         shapes.initChildren();
         var cw = ColorSet.instance.getWriter(AttribAliases.NAME_COLOR_IN);
         for (i in 0...shapes.getVertCount()) {
-            cw[0].setValue(shapes.buffer, i, 1);
-            cw[1].setValue(shapes.buffer, i, 1);
-            cw[2].setValue(shapes.buffer, i, 1);
-            cw[3].setValue(shapes.buffer, i, 1);
+            cw[0].setValue(shapes.buffer, i, 255);
+            cw[1].setValue(shapes.buffer, i, 255);
+            cw[2].setValue(shapes.buffer, i, 255);
+            cw[3].setValue(shapes.buffer, i, 255);
         }
 
         gldo.addView(shapes);
