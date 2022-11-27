@@ -1,4 +1,4 @@
 package gl;
 interface Renderable<T:AttribSet> {
-    function render(targets:RenderTargets<T>):Void;
+    function render(targets:RenderTarget<T>):Void;
 }

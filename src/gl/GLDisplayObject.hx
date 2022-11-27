@@ -50,7 +50,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
     var indicesBuffer:GLBuffer;
-    var targets:RenderTargets<T> ;
+    var targets:RenderTarget<T> ;
     var renderingAspect:RenderingAspect;
     var gl:WebGLRenderContext;
     var set:T;
@@ -66,7 +66,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
         this.renderingAspect = aspect;
         this.set = set;
         this.shaderFactory = shaderFactory;
-        this.targets = new RenderTargets(set);
+        this.targets = new RenderTarget(set);
         #if openfl
         super();
         addEventListener(RenderEvent.RENDER_OPENGL, onRender);

@@ -5,7 +5,7 @@ import data.aliases.AttribAliases;
 import data.IndexCollection;
 import gl.AttribSet;
 import gl.Renderable;
-import gl.RenderTargets;
+import gl.RenderTarget;
 import gl.ValueWriter.AttributeWriters;
 import graphics.shapes.Shape;
 import haxe.io.Bytes;
@@ -59,7 +59,7 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
 
     public dynamic function transform(a:Axis2D, v) return v;
 
-    public function render(targets:RenderTargets<T>):Void {
+    public function render(targets:RenderTarget<T>):Void {
         if (!inited)
             return;
         targets.blitIndices(inds, inds.length);

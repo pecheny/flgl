@@ -3,7 +3,7 @@ import data.IndexCollection;
 import haxe.io.Bytes;
 import gl.AttribSet;
 import gl.RenderDataTarget;
-class RenderTargets<T:AttribSet> {
+class RenderTarget<T:AttribSet> {
     public var verts(default, null) = new RenderDataTarget();
     public var inds (default, null) = new RenderDataTarget();
     var attrs:T;
