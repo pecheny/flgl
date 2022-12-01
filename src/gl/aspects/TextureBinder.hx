@@ -1,8 +1,8 @@
 package gl.aspects;
-import gl.GLDisplayObject.GLState;
-import FuiBuilder.TextureStorage;
+import utils.TextureStorage;
 import bindings.GLTexture;
 import bindings.WebGLRenderContext;
+import gl.GLDisplayObject.GLState;
 class TextureBinder implements RenderingAspect {
     var storage:TextureStorage;
     var path:String;
