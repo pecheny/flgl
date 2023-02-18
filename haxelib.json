@@ -1,0 +1,14 @@
+{
+  "name": "flgl",
+  "url": "https://github.com/pecheny/flgl",
+  "license": "MIT",
+  "tags": ["openfl", "opengl", "render" ],
+  "description": "",
+  "version": "1.0.0",
+  "releasenote": "Initial release. ",
+  "classPath": "src",
+  "contributors": [
+    "pecheny"
+  ]
+}
+ 
