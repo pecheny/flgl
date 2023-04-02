@@ -45,7 +45,7 @@ class GLState<T:AttribSet> {
 }
 
 class GLDisplayObject<T:AttribSet> implements GLDrawcall
-#if openfl extends DisplayObject
+#if openfl extends openfl.display.Sprite
     #end {
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
