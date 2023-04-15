@@ -12,7 +12,7 @@ import macros.AVConstructor;
 
 class LineThicknessCalculator implements Resizable {
     var lwBase:Float;
-    var _lineScales = AVConstructor.create(Axis2D, 1., 1.);
+    var _lineScales:AVector2D<Float> = AVConstructor.create(Axis2D, 1., 1.);
     var aspectRatio:AspectRatio;
 
     public function new(ar:AspectRatio, thickness = 0.05) {

@@ -7,11 +7,19 @@ class TextureFragment implements ShaderElement {
     }
 
     public static macro function get(uvChannel:Int, imgChannel:Int) {
-        return macro {
+        #if (haxe_ver < 4.3) 
+        macro {
             var uv = $p{["Aliases", "VA", "UV_" + $v{uvChannel}]};
             var smpl = $p{["Aliases", "UA", "IMG_" + $v{imgChannel}]};
             TextureFragment._get(uv, smpl);
         }
+        #else
+        return macro {
+            var uv = $p{["Aliases", "VA", "UV_" + uvChannel]};
+            var smpl = $p{["Aliases", "UA", "IMG_" + imgChannel]};
+            TextureFragment._get(uv, smpl);
+        }
+        #end
     }
 
     public static function _get(attr, vary) {
