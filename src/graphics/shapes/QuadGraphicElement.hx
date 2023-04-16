@@ -1,4 +1,5 @@
 package graphics.shapes;
+import haxe.ds.ReadOnlyArray;
 import macros.AVConstructor;
 import Axis2D;
 import data.IndexCollection;
@@ -16,7 +17,8 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
         return IndexCollections.QUAD_ODD;
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
+    public static inline function writeQuadPostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer, weights:ReadOnlyAVector2D<ReadOnlyArray<Float>> = null) {
+        weights = weights ?? RectWeights.weights;
         inline function writeAxis(axis:Axis2D, i) {
             var wg = weights[axis][i];
             writer[axis].setValue(target, vertOffset + i, transformer(axis, wg));
@@ -25,6 +27,10 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
             writeAxis(horizontal, i);
             writeAxis(vertical, i);
         }
+    }
+
+    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
+        writeQuadPostions(target, writer, vertOffset , transformer, weights);
     }
 
     public function getVertsCount():Int {
