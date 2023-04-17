@@ -3,7 +3,7 @@ package graphics.shapes;
 import gl.ValueWriter.AttributeWriters;
 import haxe.io.Bytes;
 import data.IndexCollection;
-import al.al2d.Axis2D;
+import Axis2D;
 import gl.AttribSet;
 class ProgressBar <T:AttribSet> implements Shape {
     public var weights:Array<Array<Float>>;
