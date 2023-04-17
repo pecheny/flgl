@@ -1,4 +1,5 @@
 package graphics.shapes;
+import data.aliases.AttribAliases;
 import Axis2D;
 import data.IndexCollection;
 import gl.ValueWriter;
@@ -10,14 +11,16 @@ import a2d.AspectRatio;
 
 class Bar implements Shape {
     var axis:ReadOnlyAVector2D<BarAxisBase>;
+    var writers:AttributeWriters;
 
     public function new(att, xt, yt) {
         axis = AVConstructor.create(xt, yt);
+        writers = att.getWriter(AttribAliases.NAME_POSITION) ;
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
+    public function writePostions(target:Bytes, vertOffset = 0, transformer) {
         for (a in Axis2D) {
-            axis[a].writePositions(a, transformer, target, writer, vertOffset);
+            axis[a].writePositions(a, transformer, target, writers, vertOffset);
         }
     }
 

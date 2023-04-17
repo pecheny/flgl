@@ -65,7 +65,7 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
         targets.blitIndices(inds, inds.length);
         var pos = 0;
         for (sh in children) {
-            sh.writePostions(buffer, posWriter, pos, transform);
+            sh.writePostions(buffer, pos, transform);
             pos += sh.getVertsCount();
         }
         targets.blitVerts(buffer, vertsCount);

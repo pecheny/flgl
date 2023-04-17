@@ -1,4 +1,5 @@
 package graphics.shapes;
+import data.aliases.AttribAliases;
 import haxe.ds.ReadOnlyArray;
 import macros.AVConstructor;
 import Axis2D;
@@ -8,9 +9,12 @@ import gl.ValueWriter.AttributeWriters;
 import haxe.io.Bytes;
 class QuadGraphicElement<T:AttribSet> implements Shape {
     public var weights:AVector2D<Array<Float>>;
+    var writers:AttributeWriters;
 
     public function new(attrs:T) {
         weights = AVConstructor.create(RectWeights.weights[horizontal].copy(), RectWeights.weights[vertical].copy());
+        // var writers:AttributeWriters;
+        writers = attrs.getWriter(AttribAliases.NAME_POSITION) ;
     }
 
     public inline function getIndices():IndexCollection {
@@ -29,8 +33,8 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
         }
     }
 
-    public function writePostions(target:Bytes, writer:AttributeWriters, vertOffset = 0, transformer) {
-        writeQuadPostions(target, writer, vertOffset , transformer, weights);
+    public function writePostions(target:Bytes,  vertOffset = 0, transformer) {
+        writeQuadPostions(target, writers, vertOffset , transformer, weights);
     }
 
     public function getVertsCount():Int {
