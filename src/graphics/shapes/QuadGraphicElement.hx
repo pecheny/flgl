@@ -12,7 +12,7 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
     var writers:AttributeWriters;
 
     public function new(attrs:T) {
-        weights = AVConstructor.create(RectWeights.weights[horizontal].copy(), RectWeights.weights[vertical].copy());
+        weights = RectWeights.identity();
         // var writers:AttributeWriters;
         writers = attrs.getWriter(AttribAliases.NAME_POSITION) ;
     }
@@ -35,6 +35,11 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
 
     public function writePostions(target:Bytes,  vertOffset = 0, transformer) {
         writeQuadPostions(target, writers, vertOffset , transformer, weights);
+        writeAttributes(target, vertOffset, transformer);
+    }
+
+    public dynamic function writeAttributes(target:Bytes,  vertOffset = 0, transformer) {
+        
     }
 
     public function getVertsCount():Int {
