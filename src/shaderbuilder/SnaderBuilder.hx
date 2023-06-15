@@ -35,8 +35,8 @@ class TextureShader extends ShaderBase {
             Uv0Passthrough.instance],
             [TextureFragment.get(0, 0)]
         );
-        trace(vs);
-        trace(fs);
+        // trace(vs);
+        // trace(fs);
     }
 }
 class VertColorShader extends ShaderBase {
