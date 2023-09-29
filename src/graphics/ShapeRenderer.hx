@@ -44,7 +44,7 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
         onInit.dispatch();
     }
 
-    function fillIndices() {
+    public function fillIndices() {
         var indNum = 0;
         var vertNum = 0;
         for (sh in children) {
