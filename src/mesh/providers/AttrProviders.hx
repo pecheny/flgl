@@ -89,6 +89,10 @@ class SolidColorProvider {
         return this;
     }
 
+    public function setAlpha(a:Int) {
+        components[3] = a;
+    }
+
     public static function fromInt(val:Int, a=255) {
         return new SolidColorProvider(0,0,0,a).setColor(val);
     }
