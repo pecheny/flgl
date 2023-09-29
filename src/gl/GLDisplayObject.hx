@@ -120,6 +120,8 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
             child.render(targets);
         }
 
+        if(targets.indsCount() == 0)
+            return;
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
         gl.useProgram(state.program);
@@ -134,7 +136,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
         gl.blendFunc(srcAlpha, dstAlpha);
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indicesBuffer);
         gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), GL.DYNAMIC_DRAW);
-        gl.drawElements(GL.TRIANGLES, targets.indsCount(), GL.UNSIGNED_SHORT, 0);
+        gl.drawElements(GL.TRIANGLES,Std.int( targets.indsCount() ), GL.UNSIGNED_SHORT, 0);
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, null);
         gl.useProgram(null);
         gl.bindBuffer(GL.ARRAY_BUFFER, null);
