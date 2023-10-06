@@ -74,6 +74,14 @@ abstract IndexCollection(Bytes) from Bytes to Bytes {
         return ic;
     }
 
+    public static inline function fromArray(arr:Array<Int>) {
+        var ic = new IndexCollection(arr.length);
+        for (i in 0...arr.length){
+            ic[i] = arr[i];
+        }
+        return ic;
+    }
+
     public function toString() {
         return "" + [for (i in 0...length) get(i)];
     }
