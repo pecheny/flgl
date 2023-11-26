@@ -80,12 +80,17 @@ class SolidColorProvider {
     }
 
     public function setColor(val:Int) {
-        var r = val >> 16;
+        var r = (val & 0xff0000)>> 16;
         var g = (val & 0x00ff00) >> 8;
         var b = (val & 0x0000ff);
+        var a = (val & 0xff000000) >> 24;
         components[0] = r;
         components[1] = g;
         components[2] = b;
+        if(a > 0) {
+            components[3] = a;
+        }
+
         return this;
     }
 
