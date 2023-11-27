@@ -19,7 +19,7 @@ class MSDFFrag implements ShaderElement {
     public function new() {}
 
     public function getDecls():String {return'
-                    uniform vec4 ${MSDFShader.color};
+                    // uniform vec4 ${MSDFShader.color};
                     varying float $smothness;
 					uniform sampler2D ${MSDFShader.glyphAtlas};
 					varying vec2 $uv_v;
@@ -47,14 +47,14 @@ class MSDFFrag implements ShaderElement {
 
 
 						vec4 col = vec4(.5, .5, .5, .5);
-						vec4 otp = (
-							${MSDFShader.color}	* fillAlpha * color.a
-							+
-							strokeColor * strokeColor.a * strokeAlpha
-							* (1.0 - fillAlpha)
-						);
+						// vec4 otp = (
+						// 	${MSDFShader.color}	* fillAlpha * color.a
+						// 	+
+						// 	strokeColor * strokeColor.a * strokeAlpha
+						// 	* (1.0 - fillAlpha)
+						// );
 //						gl_FragColor = col;
-						gl_FragColor = otp;
+						gl_FragColor.a = fillAlpha;
 
 ';
 
