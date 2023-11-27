@@ -174,3 +174,36 @@ class GeneralPassthrough implements ShaderElement {
         return '$varName = $attrName;';
     }
 }
+
+class ApplyVertColorFrag implements ShaderElement {
+    public static var instance(default, null) = new ApplyVertColorFrag();
+
+    function new() {}
+
+    public function getDecls():String {
+        return '
+           varying vec4 ${AttribAliases.NAME_COLOR_OUT};';
+    }
+
+    public function getExprs():String {
+        return '
+           vec4 cl = vec4(0.0, 0.0, 0.0, 1.0);
+           gl_FragColor.rgb = ${AttribAliases.NAME_COLOR_OUT}.rgb;';
+    }
+}
+
+class ApplyUnoformColorFrag implements ShaderElement {
+    public static var instance(default, null) = new ApplyUnoformColorFrag ();
+
+    function new() {}
+
+    public function getDecls():String {
+        return '
+           uniform vec4 color;';
+    }
+
+    public function getExprs():String {
+        return '
+           gl_FragColor.rgb = color.rgb;';
+    }
+}
