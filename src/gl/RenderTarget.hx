@@ -1,8 +1,8 @@
 package gl;
 import data.IndexCollection;
-import haxe.io.Bytes;
 import gl.AttribSet;
 import gl.RenderDataTarget;
+import haxe.io.Bytes;
 class RenderTarget<T:AttribSet> {
     public var verts(default, null) = new RenderDataTarget();
     public var inds (default, null) = new RenderDataTarget();
@@ -13,6 +13,9 @@ class RenderTarget<T:AttribSet> {
         this.attrs = attrs;
     }
 
+    public function grantCapacity(vertsCount) {
+        verts.grantCapacity((verts.pos + vertsCount) * attrs.stride);
+    }
 
     public inline function writeValue(attrAlias:String, comp:Int, val:Float) {
         verts.grantCapacity((verts.pos + 256) * attrs.stride);
