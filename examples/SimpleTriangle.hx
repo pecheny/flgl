@@ -66,13 +66,7 @@ class Triangle<T:AttribSet> implements Renderable<T> {
         setY(1, -0.5);
         setX(2, 0);
         setY(2, 0.5);
-        var colorWriter = attrs.getWriter(AttribAliases.NAME_COLOR_IN);
-        for (i in 0...vertsCount) {
-            colorWriter[0].setValue(buffer, i, 1);
-            colorWriter[1].setValue(buffer, i, 1);
-            colorWriter[2].setValue(buffer, i, 1);
-            colorWriter[3].setValue(buffer, i, 1);
-        }
+        attrs.writeColor(buffer, 0xff0000, 0, 3);
     }
 
     public function render(targets:RenderTarget<T>):Void {
