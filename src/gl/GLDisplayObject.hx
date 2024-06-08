@@ -113,8 +113,14 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
 
     public function render(gl:WebGLRenderContext) {
         init(gl);
+        var NO_ERROR =
+        #if lime
+        gl.NO_ERROR;
+        #else
+        WebGLRenderContext.NO_ERROR;
+        #end
         var err = gl.getError();
-        if (err != gl.NO_ERROR)
+        if (err != NO_ERROR)
             trace("GL err " + err);
         if(gl.isContextLost() || this.gl.isContextLost())
             trace("context lost");
