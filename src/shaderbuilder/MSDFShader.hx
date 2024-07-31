@@ -1,5 +1,4 @@
 package shaderbuilder;
-import hxColorToolkit.spaces.RGB;
 import gl.GLDisplayObject.GLState;
 import bindings.GLUniformLocation;
 import data.aliases.AttribAliases;
@@ -118,7 +117,6 @@ class MSDFRenderingElement implements RenderingAspect {
     var texure:RenderingAspect;
     var color:GLUniformLocation;
     var inited = false;
-    var rgb:RGB;
     var r:Float;
     var g:Float;
     var b:Float;
@@ -132,6 +130,7 @@ class MSDFRenderingElement implements RenderingAspect {
     }
 
     public function bind(state:GLState<Dynamic>):Void {
+        trace("msdf bnd");
         var gl = state.gl;
         texure.bind(state);
         gl.uniform4f(state.uniforms["color"], r, g, b, 1.0);
