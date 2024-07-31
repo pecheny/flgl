@@ -1,7 +1,7 @@
 package transform;
-// import al.al2d.Widget2D;
 import Axis2D;
 import a2d.Boundbox;
+
 using transform.LiquidTransformer.BoundboxConverters;
 class LiquidTransformer extends TransformerBase {
     override public function transformValue(c:Axis2D, input:Float) {
