@@ -130,7 +130,6 @@ class MSDFRenderingElement implements RenderingAspect {
     }
 
     public function bind(state:GLState<Dynamic>):Void {
-        trace("msdf bnd");
         var gl = state.gl;
         texure.bind(state);
         gl.uniform4f(state.uniforms["color"], r, g, b, 1.0);
