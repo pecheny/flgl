@@ -1,10 +1,11 @@
 package gl.aspects;
 import Axis2D;
-import a2d.AspectRatio;
 import al.al2d.Placeholder2D;
 import al.core.AxisApplier;
 import gl.GLDisplayObject.GLState;
 import gl.aspects.RenderingAspect;
+
+// TODO extract dependency on alayout into external class
 
 typedef  DisplayObject = ScissorAspect;//{x:Float, y:Float, width:Float, height:Float }
 
@@ -53,7 +54,8 @@ class DOHorizontalPosApplier implements AxisApplier {
 
 class ScissorAspect implements RenderingAspect {
     var stg:openfl.display.Stage;
-    var ar:AspectRatio;
+    var ar:ReadOnlyAVector2D<Float>;// == a2d.AspectRatio;
+
 
     public var x:Float = 0;
     public var y:Float = 0;
