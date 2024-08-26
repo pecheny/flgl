@@ -1,6 +1,6 @@
 package gl.aspects;
 import Axis2D;
-import al.al2d.Placeholder2D;
+import a2d.Placeholder2D;
 import al.core.AxisApplier;
 import gl.GLDisplayObject.GLState;
 import gl.aspects.RenderingAspect;
