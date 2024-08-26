@@ -1,4 +1,4 @@
-package transform;
+package a2d.transform;
 
 /**
  *  Calculates axis-aligned thickness for use in normalized space of widget.

@@ -1,4 +1,4 @@
-package transform;
+package a2d.transform;
 import Axis2D;
 class ProportionalTransformer extends TransformerBase {
     var localScale = 1.;

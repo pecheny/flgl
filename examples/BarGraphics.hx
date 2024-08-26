@@ -8,9 +8,9 @@ import gl.sets.ColorSet;
 import graphics.ShapeRenderer;
 import graphics.shapes.Bar;
 import a2d.AspectRatioProvider;
-import transform.LineThicknessCalculator;
-import transform.Resizable;
-import transform.LiquidTransformer;
+import a2d.transform.LineThicknessCalculator;
+import a2d.transform.Resizable;
+import a2d.transform.LiquidTransformer;
 
 using macros.AVConstructor;
 

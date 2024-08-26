@@ -1,4 +1,5 @@
-package transform;
+package a2d.transform;
+import a2d.transform.Resizable;
 import Axis2D;
 import a2d.Boundbox;
 import macros.AVConstructor;

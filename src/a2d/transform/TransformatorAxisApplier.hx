@@ -1,5 +1,5 @@
-package transform;
-import transform.TransformerBase;
+package a2d.transform;
+import a2d.transform.TransformerBase;
 #if taxis
 import Axis2D;
 #else
