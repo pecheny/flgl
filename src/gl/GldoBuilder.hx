@@ -21,13 +21,10 @@ class GldoBuilder {
 		return dc;
 	}
 
-	public function getGldo(e:Entity, type, aspect, name) {
-		var attrs = shaders.getAttributeSet(type);
+	public function bindLayer<TA:AttribSet>(e:Entity, attrs:TA, type, name, gldo:GLDisplayObject<TA>) {
 		var dc = getDrawcalls(e);
-		var gldo = dc.findLayer(attrs, name);
-		if (gldo != null)
-			return gldo;
-		var gldo = new GLDisplayObject(attrs, shaders.getState.bind(attrs, _, type), aspect);
+		if (dc.findLayer(attrs, name)!= null)
+			throw 'e ${e.name} already has layer $attrs _ $name';
 		gldo.name = name;
 		var dc = getDrawcalls(e);
 		dc.addLayer(attrs, gldo, name);

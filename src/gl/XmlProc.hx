@@ -17,10 +17,8 @@ typedef GldoFactory<T:AttribSet> = Entity -> Xml -> GLDisplayObject<T>;
 
 class XmlProc {
 	var handlers:Map<String, GldoFactory<Dynamic>> = new Map();
-	var gldoBuilder:GldoBuilder;
 
-	public function new(gb) {
-		this.gldoBuilder = gb;
+	public function new() {
 	}
 
 	public function processNode(e:Entity, node:Xml, ?container:Null<GldoContainer>):Entity {
@@ -30,7 +28,6 @@ class XmlProc {
 					e.addComponent(c);
 					if (container != null)
 						container.addChild(c);
-					var dc = gldoBuilder.getDrawcalls(e);
 					for (child in node.elements()) {
 						processNode(e, child, c);
 					}
@@ -46,7 +43,6 @@ class XmlProc {
 					if (container != null)
 						container.addChild(gldo);
 					else {
-						var dc = gldoBuilder.getDrawcalls(e);
 						e.addComponent(gldo);
 					}
 					e;
