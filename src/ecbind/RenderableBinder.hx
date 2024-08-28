@@ -5,10 +5,17 @@ import ec.Entity;
 import gl.AttribSet;
 import gl.GLDisplayObject;
 import Type;
+
+@:build(ec.macros.Macros.buildGetOrCreate("onCreate"))
 class RenderableBinder implements CtxBinder {
     var map = new GLDisplayObjectsCollection();
 
     public function new() {}
+    
+    public function onCreate(e:Entity) {
+        e.addComponent(this);
+    }
+
 
     public function addLayer<T:AttribSet>(set:T, layer:GLDisplayObject<T>, name = "") {
         var id = getLayerId(set, name);
@@ -44,6 +51,14 @@ class RenderableBinder implements CtxBinder {
     public function findLayer<T:AttribSet>(attrs:T, layerName) {
         return map.get(getLayerId(attrs, layerName));
     }
+    
+    public function bindLayer<TA:AttribSet>(e:Entity, attrs:TA, type, name, gldo:GLDisplayObject<TA>) {
+		if (findLayer(attrs, name) != null)
+			throw 'e ${e.name} already has layer $attrs _ $name';
+		gldo.name = name;
+		addLayer(attrs, gldo, name);
+		return gldo;
+	}
 
     public static function getLayerId<T:AttribSet>(set:T, layerName:String) {
         return new LayerId(set, layerName);
