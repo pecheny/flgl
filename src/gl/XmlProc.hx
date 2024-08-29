@@ -1,11 +1,12 @@
 package gl;
 
+import gl.passes.PassBase;
+import gl.aspects.RenderingAspect.RenderAspectBuilder;
 import ecbind.RenderableBinder;
 import gl.ShaderRegistry.IShaderRegistry;
 import gl.GLDisplayObject;
 import ec.Entity;
 import gl.AttribSet;
-import gl.GldoBuilder;
 
 #if slec
 typedef Entity = ec.Entity;
@@ -13,12 +14,13 @@ typedef Entity = ec.Entity;
 typedef Entity = {addComponent:Dynamic->Dynamic}
 #end
 
-typedef GldoFactory<T:AttribSet> = Entity -> Xml -> GLDisplayObject<T>;
 
 class XmlProc {
-	var handlers:Map<String, GldoFactory<Dynamic>> = new Map();
+	var handlers:Map<String, PassBase<Dynamic>> = new Map();
+    var aspects:RenderAspectBuilder;
 
-	public function new() {
+	public function new(aspects) {
+        this.aspects = aspects;
 	}
 
 	public function processNode(e:Entity, node:Xml, ?container:Null<GldoContainer>):Entity {
@@ -39,7 +41,9 @@ class XmlProc {
 						trace('No "$type" drawcall type was registered.');
 						return e;
 					}
-					var gldo = handlers[type](e, node);
+					var pass = handlers[type];
+                    aspects.newChain(); // for now duplicates in pipe.cgldo
+                    var gldo = pass.createGldo(e, node, aspects);
 					if (container != null)
 						container.addChild(gldo);
 					else {
@@ -52,8 +56,8 @@ class XmlProc {
 		}
 	}
 
-	public function regHandler(t, h) {
-		handlers[t] = h;
+	public function regHandler<T:AttribSet>(pass:PassBase<T>) {
+		handlers[pass.drawcallType] = pass;
 	}
 }
 
