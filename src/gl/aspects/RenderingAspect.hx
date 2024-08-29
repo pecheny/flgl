@@ -38,12 +38,10 @@ class RenderingAspects implements RenderingAspect {
 class RenderAspectBuilder implements RenderingElementsFactory {
     // для элементов не зваисящих от шейдерной программы
     // для зависящих вместо массива надоделать фабрику
-    var sharedAspects:Array<RenderingAspect>;
-    var instance:Array<RenderingAspect>;
+    var sharedAspects:Array<RenderingAspect> = [];
+    var instance:Array<RenderingAspect> = [];
 
-    public function new(sharedAspects) {
-        this.sharedAspects = sharedAspects;
-    }
+    public function new() { }
 
     public function newChain() {
         instance = [];
@@ -55,6 +53,11 @@ class RenderAspectBuilder implements RenderingElementsFactory {
         return this;
     }
 
+    public function addShared(re:RenderingAspect) {
+        sharedAspects.push(re);
+        return this;
+    }
+
     public function build() {
         if (instance == null) throw "start new chain before build()";
         var result =
@@ -62,7 +65,7 @@ class RenderAspectBuilder implements RenderingElementsFactory {
             null;
         else if (instance.length == 0) {
             if (sharedAspects.length > 1)
-                new RenderingAspects(sharedAspects);
+                new RenderingAspects(sharedAspects.copy());
             else
                 sharedAspects[0];
         }
@@ -73,7 +76,12 @@ class RenderAspectBuilder implements RenderingElementsFactory {
                 instance[0];
         } else
             new RenderingAspects(sharedAspects.concat(instance));
-        instance = null;
+        instance = [];
         return result;
+    }
+    
+    public function reset() {
+        sharedAspects.resize(0);
+        instance = [];
     }
 }
