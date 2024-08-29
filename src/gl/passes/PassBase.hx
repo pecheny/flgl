@@ -8,50 +8,61 @@ import gl.AttribSet;
 import shaderbuilder.ShaderElement;
 
 class PassBase<TAtt:AttribSet> {
-    var fui:RenderingPipeline;
-    var attr:TAtt;
+	var fui:RenderingPipeline;
+	var attr:TAtt;
 
-    public var shaderType(default, null):String;
-    public var drawcallType(default, null):String;
+	public var shaderType(default, null):String;
+	public var drawcallType(default, null):String;
 
-    public var vertElems(default, null):Array<ShaderElement> = [];
-    public var fragElems(default, null):Array<ShaderElement> = [];
-    public var uniforms(default, null):Array<String> = [];
-    public var alias(default, null):Array<String> = [];
+	public var vertElems(default, null):Array<ShaderElement> = [];
+	public var fragElems(default, null):Array<ShaderElement> = [];
+	public var uniforms(default, null):Array<String> = [];
+	public var alias(default, null):Array<String> = [];
 
-    public function new(att:TAtt, fui, shaderType, drawcallType) {
-        this.fui = fui;
-        this.attr = att;
-        this.drawcallType = drawcallType;
-        this.shaderType = shaderType;
-    }
+	var aspectRegistrator:(Xml, RenderAspectBuilder) -> Void;
+	var layerNameExtractor:Xml->String;
 
-    function getShaderAlias() {
-        if (alias.length > 0)
-            return shaderType + "+" + alias.join("+");
-        else
-            return shaderType;
-    }
+	public function new(att:TAtt, fui, shaderType, drawcallType) {
+		this.fui = fui;
+		this.attr = att;
+		this.drawcallType = drawcallType;
+		this.shaderType = shaderType;
+	}
 
-    public function register() {
-        // fui.regDrawcallType(drawcallType, , createGldo);
-    }
-    
-    public function getShaderDesc():ShaderDescr<TAtt> {
-        return {
-            type: getShaderAlias(),
-            attrs: attr,
-            vert: vertElems,
-            frag: fragElems,
-            uniforms: uniforms
-        };
-    }
+	function getShaderAlias() {
+		if (alias.length > 0)
+			return shaderType + "+" + alias.join("+");
+		else
+			return shaderType;
+	}
 
-    public function createGldo(e:Entity, xml:Xml, aspects:RenderAspectBuilder) {
-        return fui.createGldo(attr, e, shaderType, aspects.build(), "");
-    }
+	public function register() {
+		// fui.regDrawcallType(drawcallType, , createGldo);
+	}
 
-    function createAspect(e:Entity, xml:Xml) {
-        return null;
-    }
+	public function getShaderDesc():ShaderDescr<TAtt> {
+		return {
+			type: getShaderAlias(),
+			attrs: attr,
+			vert: vertElems,
+			frag: fragElems,
+			uniforms: uniforms
+		};
+	}
+
+	public function createGldo(e:Entity, xml:Xml, aspects:RenderAspectBuilder) {
+		if (aspectRegistrator != null)
+			aspectRegistrator(xml, aspects);
+		return fui.createGldo(attr, e, shaderType, aspects.build(), if (layerNameExtractor != null) layerNameExtractor(xml) else "");
+	}
+
+	public function withLayerNameExtractor(layerNameExtractor) {
+		this.layerNameExtractor = layerNameExtractor;
+		return this;
+	}
+
+	public function withAspectRegistrator(aspectRegistrator) {
+		this.aspectRegistrator = aspectRegistrator;
+		return this;
+	}
 }

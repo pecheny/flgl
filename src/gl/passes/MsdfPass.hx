@@ -1,18 +1,13 @@
 package gl.passes;
-import ec.Entity;
-import gl.GLDisplayObject;
-import data.aliases.AttribAliases;
-import shaderbuilder.ShaderElement;
-import gl.aspects.TextureBinder;
-import shaderbuilder.SnaderBuilder;
-import shaderbuilder.MSDFShader;
 import gl.sets.MSDFSet;
+import shaderbuilder.MSDFShader;
+import shaderbuilder.SnaderBuilder;
 
-class MsdfPass extends FontPass<MSDFSet> {
+class MsdfPass extends PassBase<MSDFSet> {
     static var smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, MSDFShader.smoothness);
 
-    public function new(fui, fonts) {
-        super(MSDFSet.instance, fui, "msdf", "text", fonts);
+    public function new(fui) {
+        super(MSDFSet.instance, fui, "msdf", "text");
         vertElems.push(ColorPassthroughVert.instance,);
         vertElems.push(Uv0Passthrough.instance,);
         vertElems.push(PosPassthrough.instance,);
