@@ -112,30 +112,3 @@ class MSDFShader extends ShaderBase {
     }
 
 }
-
-class MSDFRenderingElement implements RenderingAspect {
-    var texure:RenderingAspect;
-    var color:GLUniformLocation;
-    var inited = false;
-    var r:Float;
-    var g:Float;
-    var b:Float;
-
-
-    public function new(s, p, c = 0xffffff) {
-        texure = new TextureBinder(s, p);
-        this.r = ( c >> 16 & 0xFF ) / 255;
-        this.g = ( c >> 8 & 0xFF ) / 255;
-        this.b = ( c & 0xFF ) / 255;
-    }
-
-    public function bind(state:GLState<Dynamic>):Void {
-        var gl = state.gl;
-        texure.bind(state);
-        gl.uniform4f(state.uniforms["color"], r, g, b, 1.0);
-    }
-
-    public function unbind(gl):Void {
-        texure.unbind(gl);
-    }
-}
