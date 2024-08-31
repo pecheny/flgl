@@ -1,14 +1,11 @@
 package gl.passes;
 
-import gl.aspects.RenderingAspect.RenderAspectBuilder;
-import gl.ShaderRegistry.ShaderDescr;
-import FuiBuilder.RenderingPipeline;
-import ec.Entity;
 import gl.AttribSet;
+import gl.ShaderRegistry.ShaderDescr;
+import gl.aspects.RenderingAspect.RenderAspectBuilder;
 import shaderbuilder.ShaderElement;
 
 class PassBase<TAtt:AttribSet> {
-	var fui:RenderingPipeline;
 	public var attr (default, null):TAtt;
 
 	public var shaderType(default, null):String;
@@ -22,8 +19,7 @@ class PassBase<TAtt:AttribSet> {
 	public var aspectRegistrator:(Xml, RenderAspectBuilder) -> Void;
 	public var layerNameExtractor:Xml->String;
 
-	public function new(att:TAtt, fui, shaderType, drawcallType) {
-		this.fui = fui;
+	public function new(att:TAtt, shaderType, drawcallType) {
 		this.attr = att;
 		this.drawcallType = drawcallType;
 		this.shaderType = shaderType;

@@ -7,8 +7,8 @@ import shaderbuilder.SnaderBuilder;
 class CmsdfPass extends PassBase<CMSDFSet> {
     static var smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, MSDFShader.smoothness);
 
-    public function new(fui) {
-        super(CMSDFSet.instance, fui, "cmsdf", "text");
+    public function new() {
+        super(CMSDFSet.instance, "cmsdf", "text");
 
         vertElems.push(ColorPassthroughVert.instance,);
         vertElems.push(Uv0Passthrough.instance,);
