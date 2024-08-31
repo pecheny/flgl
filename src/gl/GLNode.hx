@@ -1,14 +1,13 @@
 package gl;
 
-import gl.Renderable;
-import gl.RenderTarget;
+import bindings.GL;
 import bindings.GLBuffer;
 import bindings.WebGLRenderContext;
-import gl.aspects.RenderingAspect;
-import gl.GLDisplayObject.GLState;
 import gl.AttribSet;
-import bindings.GL;
-
+import gl.GLDisplayObject.GLState;
+import gl.RenderTarget;
+import gl.Renderable;
+import gl.aspects.RenderingAspect;
 
 class GLNode {
 	var renderingAspects:Array<RenderingAspect> = [];
@@ -24,20 +23,25 @@ class GLNode {
 
 class ContainerGLNode extends GLNode {
 	public var children(default, null):Array<GLNode> = [];
-    public function new() {
-    
-    }
 
-	override function render(gl:Dynamic) {
+	static var state = new GLState(null);
+
+	public function new() {}
+
+	override function render(gl:WebGLRenderContext) {
+		// for now i didnt figure out yet how to separate two kind of aspects
+		// shader/drawcall-related and just changing shared gl state
+		// so leave dirty-dummy GLState instance to pass the context
+		@:privateAccess state.gl = gl;
 		super.render(gl);
 		for (a in renderingAspects)
-			a.bind(null);
+			a.bind(state);
 
 		for (ch in children)
 			ch.render(gl);
 
 		for (a in renderingAspects)
-			a.unbind(null);
+			a.unbind(state);
 	}
 
 	public function addChild(ch) {
@@ -97,7 +101,7 @@ class ShadedGLNode<T:AttribSet> extends GLNode {
 		if (err != NO_ERROR)
 			trace("GL err " + err);
 		if (gl.isContextLost())
-            //  || this.gl.isContextLost())
+			//  || this.gl.isContextLost())
 			trace("context lost");
 
 		targets.flush();
