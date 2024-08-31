@@ -8,12 +8,12 @@ class MsdfPass extends PassBase<MSDFSet> {
 
     public function new() {
         super(MSDFSet.instance, "msdf", "text");
-        vertElems.push(ColorPassthroughVert.instance,);
+        uniforms.push("color");
         vertElems.push(Uv0Passthrough.instance,);
         vertElems.push(PosPassthrough.instance,);
         vertElems.push(smoothShaderEl);
 
         fragElems.push(MSDFFrag.instance);
-        fragElems.push(ApplyVertColorFrag.instance);
+        fragElems.push(ApplyUnoformColorFrag.instance);
     }
 }
