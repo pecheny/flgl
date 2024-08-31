@@ -1,14 +1,14 @@
 package ecbind;
+import gl.GLNode.ShadedGLNode;
 #if slec
 import ec.CtxWatcher.CtxBinder;
 import ec.Entity;
 import gl.AttribSet;
-import gl.GLDisplayObject;
 import Type;
 
 @:build(ec.macros.Macros.buildGetOrCreate("onCreate"))
 class RenderableBinder implements CtxBinder {
-    var map = new GLDisplayObjectsCollection();
+    var map = new ShadedGLNodesCollection();
 
     public function new() {}
     
@@ -17,7 +17,7 @@ class RenderableBinder implements CtxBinder {
     }
 
 
-    public function addLayer<T:AttribSet>(set:T, layer:GLDisplayObject<T>, name = "") {
+    public function addLayer<T:AttribSet>(set:T, layer:ShadedGLNode<T>, name = "") {
         var id = getLayerId(set, name);
         if (map.exists(id))
             throw "Already has layer with id " + id;
@@ -52,7 +52,7 @@ class RenderableBinder implements CtxBinder {
         return map.get(getLayerId(attrs, layerName));
     }
     
-    public function bindLayer<TA:AttribSet>(e:Entity, attrs:TA, type, name, gldo:GLDisplayObject<TA>) {
+    public function bindLayer<TA:AttribSet>(e:Entity, attrs:TA, name, gldo:ShadedGLNode<TA>) {
 		if (findLayer(attrs, name) != null)
 			throw 'e ${e.name} already has layer $attrs _ $name';
 		gldo.name = name;
@@ -72,16 +72,16 @@ abstract LayerId<T:AttribSet>(String) to String {
 }
 
 @:forward(keys, exists)
-abstract GLDisplayObjectsCollection(Map<String, GLDisplayObject<AttribSet>>) {
+abstract ShadedGLNodesCollection(Map<String, ShadedGLNode<AttribSet>>) {
     public function new() {
         this = new Map();
     }
 
-    public inline function get<T:AttribSet>(lId:LayerId<T>):GLDisplayObject<T> {
+    public inline function get<T:AttribSet>(lId:LayerId<T>):ShadedGLNode<T> {
         return cast this.get(lId);
     }
 
-    public inline function set<T:AttribSet>(lId:LayerId<T>, l:GLDisplayObject<T>) {
+    public inline function set<T:AttribSet>(lId:LayerId<T>, l:ShadedGLNode<T>) {
         this.set(lId, cast l);
     }
 }

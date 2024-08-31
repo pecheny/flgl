@@ -9,7 +9,7 @@ import shaderbuilder.ShaderElement;
 
 class PassBase<TAtt:AttribSet> {
 	var fui:RenderingPipeline;
-	var attr:TAtt;
+	public var attr (default, null):TAtt;
 
 	public var shaderType(default, null):String;
 	public var drawcallType(default, null):String;
@@ -19,8 +19,8 @@ class PassBase<TAtt:AttribSet> {
 	public var uniforms(default, null):Array<String> = [];
 	public var alias(default, null):Array<String> = [];
 
-	var aspectRegistrator:(Xml, RenderAspectBuilder) -> Void;
-	var layerNameExtractor:Xml->String;
+	public var aspectRegistrator:(Xml, RenderAspectBuilder) -> Void;
+	public var layerNameExtractor:Xml->String;
 
 	public function new(att:TAtt, fui, shaderType, drawcallType) {
 		this.fui = fui;
@@ -31,14 +31,11 @@ class PassBase<TAtt:AttribSet> {
 
 	function getShaderAlias() {
 		if (alias.length > 0)
-			return shaderType + "+" + alias.join("+");
+			return drawcallType + "+" + alias.join("+");
 		else
-			return shaderType;
+			return drawcallType;
 	}
 
-	public function register() {
-		// fui.regDrawcallType(drawcallType, , createGldo);
-	}
 
 	public function getShaderDesc():ShaderDescr<TAtt> {
 		return {
@@ -50,11 +47,6 @@ class PassBase<TAtt:AttribSet> {
 		};
 	}
 
-	public function createGldo(e:Entity, xml:Xml, aspects:RenderAspectBuilder) {
-		if (aspectRegistrator != null)
-			aspectRegistrator(xml, aspects);
-		return fui.createGldo(attr, e, shaderType, aspects.build(), if (layerNameExtractor != null) layerNameExtractor(xml) else "");
-	}
 
 	public function withLayerNameExtractor(layerNameExtractor) {
 		this.layerNameExtractor = layerNameExtractor;

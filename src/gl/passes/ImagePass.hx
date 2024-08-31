@@ -15,12 +15,4 @@ class ImagePass extends PassBase<TexSet> {
 
         fragElems.push(TextureFragment.get(0, 0));
     }
-
-    override function createGldo(e:Entity, xml:Xml, aspects:RenderAspectBuilder) {
-        if (!xml.exists("path"))
-            throw '<image /> gldo should have path property';
-        // todo image name to gldo
-        trace( xml.get("path" ));
-        return fui.createGldo(TexSet.instance, e, "texture", new TextureBinder(fui.textureStorage, xml.get("path")), "");
-    }
 }
