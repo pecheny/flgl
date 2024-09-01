@@ -63,7 +63,7 @@ class RenderingPipeline {
 
 					if (pass.aspectRegistrator != null)
 						pass.aspectRegistrator(node, renderAspectBuilder);
-					var gldo = new ShadedGLNode(pass.attr, shaderRegistry.getState.bind(pass.attr, _, type), renderAspectBuilder.build());
+					var gldo = new ShadedGLNode(pass.attr, shaderRegistry.getState.bind(pass.attr, _, pass.getShaderAlias()), renderAspectBuilder.build());
 
 					if (pass.layerNameExtractor != null)
 						gldo.name = pass.layerNameExtractor(node);

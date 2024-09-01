@@ -6,9 +6,19 @@ import gl.aspects.RenderingAspect.RenderAspectBuilder;
 import shaderbuilder.ShaderElement;
 
 class PassBase<TAtt:AttribSet> {
-	public var attr (default, null):TAtt;
+	public var attr(default, null):TAtt;
 
+	/**
+		Key for idendifying shader desc in the ShaderRegistry. 
+		The descr consists of descriptions of attributes and uniforms and parts for shader program.
+	**/
 	public var shaderType(default, null):String;
+
+	/**
+		Key used as 'type' property of xml 'drawcall' node. Several drawcall types may refer to one shader type, 
+        differing in aspects implementation or way to get aspects data.
+        In other words the aspect which set predefined color value to the given uniform can get this value from different sources.
+	**/
 	public var drawcallType(default, null):String;
 
 	public var vertElems(default, null):Array<ShaderElement> = [];
@@ -25,13 +35,12 @@ class PassBase<TAtt:AttribSet> {
 		this.shaderType = shaderType;
 	}
 
-	function getShaderAlias() {
+	public function getShaderAlias() {
 		if (alias.length > 0)
-			return drawcallType + "+" + alias.join("+");
+			return shaderType + "+" + alias.join("+");
 		else
-			return drawcallType;
+			return shaderType;
 	}
-
 
 	public function getShaderDesc():ShaderDescr<TAtt> {
 		return {
@@ -42,7 +51,6 @@ class PassBase<TAtt:AttribSet> {
 			uniforms: uniforms
 		};
 	}
-
 
 	public function withLayerNameExtractor(layerNameExtractor) {
 		this.layerNameExtractor = layerNameExtractor;
