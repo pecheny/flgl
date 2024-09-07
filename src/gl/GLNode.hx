@@ -61,7 +61,8 @@ class ShadedGLNode<T:AttribSet> extends GLNode {
 	var state:GLState<T>;
 
 	public function new(set:T, shaderFactory, aspect:RenderingAspect) {
-		renderingAspects.push(aspect);
+		if (aspect != null)
+			renderingAspects.push(aspect);
 		this.set = set;
 		this.shaderFactory = shaderFactory;
 		this.targets = new RenderTarget(set);
