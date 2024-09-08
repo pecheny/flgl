@@ -53,20 +53,23 @@ class RenderingPipeline {
 					c;
 				}
 			case "drawcall": {
-					var type = node.get("type");
-					if (!handlers.exists(type)) {
-						trace('No "$type" drawcall type was registered.');
+					var drawcallType = node.get("type");
+					if (!handlers.exists(drawcallType)) {
+						trace('No "$drawcallType" drawcall type was registered.');
 						return container;
 					}
-					var pass = handlers[type];
+					var pass = handlers[drawcallType];
 					renderAspectBuilder.newChain();
 
-					if (pass.aspectRegistrator != null)
-						pass.aspectRegistrator(node, renderAspectBuilder);
+                    if(aspectFactories.exists(drawcallType))
+                        for (fac in aspectFactories.get(drawcallType))
+                            renderAspectBuilder.add(fac(node));
+
 					var gldo = new ShadedGLNode(pass.attr, shaderRegistry.getState.bind(pass.attr, _, pass.getShaderAlias()), renderAspectBuilder.build());
 
-					if (pass.layerNameExtractor != null)
-						gldo.name = pass.layerNameExtractor(node);
+					if (aliases[drawcallType] != null)
+                        for (a in aliases[drawcallType])
+                            gldo.name +=a(node); //pass.layerNameExtractor(node);
 					if (container != null)
 						container.addChild(gldo);
 					gldo;
@@ -75,9 +78,29 @@ class RenderingPipeline {
 				throw "wrong " + node.nodeName;
 		}
 	}
+    
+    var aspectFactories:Map<String, Array<Xml->RenderingAspect>> = new Map();
+    var aliases:Map<String, Array<Xml->Null<String>>> = new Map();
 
-	public function addPass<TAtt:AttribSet>(p:PassBase<TAtt>) {
+    public function addAspectExtractor(drawcallType, factory:Xml->RenderingAspect, ?alias:Xml->Null<String>) {
+        if(!aspectFactories.exists(drawcallType))
+            aspectFactories[drawcallType] = [];
+        if(!aliases.exists(drawcallType) && alias != null)
+            aliases[drawcallType] = [];
+        if (alias!=null)
+            aliases[drawcallType].push(alias);
+
+        aspectFactories[drawcallType].push(factory);
+    }
+
+	public function addPass<TAtt:AttribSet>(type:DrawcallType, p:PassBase<TAtt>) {
 		shaderRegistry.reg(p.getShaderDesc());
-		handlers[p.drawcallType] = p;
+		handlers[type] = p;
 	}
+
 }
+
+/**
+    Value for 'type' attribute in the xml drawcall description. Used as a key for pass and aspects factories registration.
+**/
+typedef DrawcallType = String;
