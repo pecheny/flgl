@@ -82,6 +82,14 @@ class RenderingPipeline {
     var aspectFactories:Map<String, Array<Xml->RenderingAspect>> = new Map();
     var aliases:Map<String, Array<Xml->Null<String>>> = new Map();
 
+/**
+	Implementation of the AspectFactory meant for constructing certain type of RenderingAspect according to the drawcall xml description.
+	If several drawcalls of given type and differing only in properties of the RenderingAspect impl constructed by the factory has application in one place 
+	(like similar shader with different textures), the factory should provide alias and return null otherwise.
+	The alias meant for identifying drawcall by given properties, therefore it should be unique for each seat of values. 
+	For example, if the aspect is a texture binder, the alias should stay same for one texture, but two different textures should have different aliases.
+	The same alias convention should be used in the CtxWatcher for Renderable impl.
+**/
     public function addAspectExtractor(drawcallType, factory:Xml->RenderingAspect, ?alias:Xml->Null<String>) {
         if(!aspectFactories.exists(drawcallType))
             aspectFactories[drawcallType] = [];
