@@ -1,4 +1,5 @@
 package gl;
+
 import data.aliases.AttribAliases;
 import haxe.io.Bytes;
 import data.ShadersAttrs;
@@ -15,24 +16,28 @@ import haxe.io.Float32Array;
 import haxe.io.Int32Array;
 import haxe.io.UInt16Array;
 import haxe.io.UInt8Array;
+
 class AttribSet {
     public function new() {}
+
     public var stride(default, null):Int = 0;
     public var attributes:Array<AttributeDescr> = [];
+
     var writers:Map<String, AttributeWriters> = new Map();
-//    var offset:Int = 0;
+
+    //    var offset:Int = 0;
 
     public function addAttribute(name:String, numComponents:Int, type:DataType, normalized:Bool = false) {
         var descr = {
-            name:name,
-            numComponents:numComponents,
-            type:type,
-            offset:stride,
-            normalized:normalized
+            name: name,
+            numComponents: numComponents,
+            type: type,
+            offset: stride,
+            normalized: normalized
         }
         writers[name] = createWritersForAttribute(descr);
         stride += numComponents * getGlSize(type);
-//        attribPointers[name] = attributes.length;
+        //        attribPointers[name] = attributes.length;
         attributes.push(descr);
     }
 
@@ -52,16 +57,13 @@ class AttribSet {
         return false;
     }
 
-
-
     #if (cpp || js || hl)
-
     public static inline function getGlSize(type:DataType) {
         return switch type {
-            case int32 : Int32Array.BYTES_PER_ELEMENT;
-            case uint8 : UInt8Array.BYTES_PER_ELEMENT;
-            case uint16 : UInt16Array.BYTES_PER_ELEMENT;
-            case float32 : Float32Array.BYTES_PER_ELEMENT;
+            case int32: Int32Array.BYTES_PER_ELEMENT;
+            case uint8: UInt8Array.BYTES_PER_ELEMENT;
+            case uint16: UInt16Array.BYTES_PER_ELEMENT;
+            case float32: Float32Array.BYTES_PER_ELEMENT;
         }
     }
 
@@ -79,7 +81,7 @@ class AttribSet {
         var attributes = attrsState.attrs;
         for (i in 0...attributes.length) {
             var state = attributes[i];
-            var descr= state.descr;
+            var descr = state.descr;
             gl.enableVertexAttribArray(state.idx);
             gl.vertexAttribPointer(state.idx, descr.numComponents, getGlType(descr.type, gl), descr.normalized, stride, descr.offset);
             offset += descr.numComponents * getGlSize(descr.type);
@@ -87,33 +89,32 @@ class AttribSet {
     }
 
     static inline function getValue(reader:Bytes, type:DataType, offset) {
-        return
-            switch type {
-                case uint8 : reader.get(offset);
-                case int32 : reader.getInt32(offset);
-                case uint16 : reader.getUInt16(offset);
-                case float32 : reader.getFloat(offset);
-            }
+        return switch type {
+            case uint8: reader.get(offset);
+            case int32: reader.getInt32(offset);
+            case uint16: reader.getUInt16(offset);
+            case float32: reader.getFloat(offset);
+        }
     }
 
-    public inline function printVertex(data:Bytes, v){
+    public inline function printVertex(data:Bytes, v) {
         var r = "";
         for (att in attributes) {
-            r += att.name  + ": [";
+            r += att.name + ": [";
             var access = writers[att.name];
             for (i in 0...access.length)
-                r+= access[i].getValue(data, v) + " ";
-            r+="]";
+                r += access[i].getValue(data, v) + " ";
+            r += "]";
         }
         return r;
     }
 
     public inline function getGlType(type:DataType, gl:WebGLRenderContext) {
         return switch type {
-            case int32 : GL.INT;
-            case uint8 : GL.UNSIGNED_BYTE;
-            case uint16 : GL.UNSIGNED_SHORT;
-            case float32 : GL.FLOAT;
+            case int32: GL.INT;
+            case uint8: GL.UNSIGNED_BYTE;
+            case uint16: GL.UNSIGNED_SHORT;
+            case float32: GL.FLOAT;
         }
     }
     #end
@@ -121,24 +122,26 @@ class AttribSet {
     public function getView(alias:String) {
         for (desc in attributes) {
             if (desc.name == alias)
-                return{
-                    stride:stride,
-                    offset:desc.offset,
-                    numComponents:desc.numComponents,
-                    type:desc.type
+                return {
+                    stride: stride,
+                    offset: desc.offset,
+                    numComponents: desc.numComponents,
+                    type: desc.type
                 }
         }
         throw "Wrong! " + alias;
     }
 
-    inline function createWriter( attr:AttributeDescr, comp:Int, stride:Int, offset:Int = 0):IValueWriter {
+    inline function createWriter(attr:AttributeDescr, comp:Int, stride:Int, offset:Int = 0):IValueWriter {
         switch attr.type {
-            case float32 : return new FloatValueWriter(attr, comp, stride, offset);
-            case uint8 : return new Uint8ValueWriter(attr, comp, stride, offset);
-            case _ : throw "not implemented yet";
+            case float32:
+                return new FloatValueWriter(attr, comp, stride, offset);
+            case uint8:
+                return new Uint8ValueWriter(attr, comp, stride, offset);
+            case _:
+                throw "not implemented yet";
         }
     }
-
 
     public function getWriter(alias:String):AttributeWriters {
         if (writers.exists(alias))
@@ -166,10 +169,18 @@ class AttribSet {
         }
     }
 
+    public inline function fillFloat(buffer, alias, value, first, count, component = 0) {
+        var writers = getWriter(alias);
+        for (vert in first...first + count) {
+            writers[component].setValue(buffer, vert, value);
+        }
+    }
+
     public inline function writeColor(buffer, color, first, count, alpha = 255) {
         var writers = getWriter(AttribAliases.NAME_COLOR_IN);
         var a = (color & 0xff000000) >> 24;
-        if (a==0) a = alpha;
+        if (a == 0)
+            a = alpha;
         var r = (color & 0xff0000) >> 16;
         var g = (color & 0x00ff00) >> 8;
         var b = (color & 0x0000ff);
