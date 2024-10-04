@@ -69,6 +69,11 @@ typedef FixedThiknessDescr = {
     var pos:Float;
 }
 
+/**
+    @param pos - position of the first side of a bar in normalized space placed from the start of a widget to the end minus thickness. 
+    Therefore 1 is a position of the border of given thickness on the last side but within widget's bounds.
+    @param thickness - value of size of the bar given in 'lineScales' units.
+**/
 class FixedThiknessTransformApplier extends BarAxisBase {
     var weights:ReadOnlyArray<Float>;
     public var pos:Float = 0;
@@ -86,7 +91,7 @@ class FixedThiknessTransformApplier extends BarAxisBase {
         var totalWidth = 1 - localTh;
         var lPos = totalWidth * pos;
         for (i in 0...weights.length) {
-            writer[a].setValue(target, vertOffset + i, tr(a, lPos + weights[i] * (lineScales[a] )));
+            writer[a].setValue(target, vertOffset + i, tr(a, lPos + weights[i] * (thikness * lineScales[a] )));
         }
     }
 }
