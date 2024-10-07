@@ -1,20 +1,21 @@
 package graphics;
 
-import utils.Signal;
-import data.aliases.AttribAliases;
 import data.IndexCollection;
+import data.aliases.AttribAliases;
 import gl.AttribSet;
-import gl.Renderable;
 import gl.RenderTarget;
+import gl.Renderable;
 import gl.ValueWriter.AttributeWriters;
 import graphics.shapes.Shape;
 import haxe.io.Bytes;
+import utils.Signal;
 
 class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffer<T> {
     public var buffer(default, null):Bytes;
-    public var onInit(default, null):Signal<Void -> Void> = new Signal();
+    public var onInit(default, null):Signal<Void->Void> = new Signal();
+
     var posWriter:AttributeWriters;
-    var children:Array<Shape> = [];
+    var children:Array<Shape>;
     var vertsCount:Int = 0;
     var inds:IndexCollection;
     var attrs:T;
@@ -25,12 +26,8 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
         posWriter = attrs.getWriter(AttribAliases.NAME_POSITION);
     }
 
-    public function addChild(shape:Shape) {
-        if (inited) throw "Can't add children after initialization";
-        children.push(shape);
-    }
-
-    public function initChildren() {
+    public function initChildren(children) {
+        this.children = children;
         var indsCount = 0;
         vertsCount = 0;
         for (sh in children) {
@@ -57,7 +54,8 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
         }
     }
 
-    public dynamic function transform(a:Axis2D, v) return v;
+    public dynamic function transform(a:Axis2D, v)
+        return v;
 
     public function render(targets:RenderTarget<T>):Void {
         if (!inited)
@@ -72,7 +70,8 @@ class ShapeRenderer<T:AttribSet> implements Renderable<T> implements ShapesBuffe
     }
 
     public function getVertCount():Int {
-        if (!inited) throw "wrong";
+        if (!inited)
+            throw "wrong";
         return vertsCount;
     }
 
