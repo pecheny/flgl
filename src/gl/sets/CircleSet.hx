@@ -24,6 +24,8 @@ class CircleSet extends AttribSet {
         addAttribute(R1_IN, 1, DataType.float32);
         addAttribute(R2_IN, 1, DataType.float32);
         addAttribute(AASIZE_IN, 1, DataType.float32);
+        addAttribute(AttribAliases.NAME_COLOR_IN, 4, DataType.uint8, true);
+
         createWriters();
     }
 }
