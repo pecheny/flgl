@@ -1,8 +1,5 @@
 package graphics;
-import mesh.MeshUtilss;
 import gl.AttribSet;
-import mesh.providers.AttrProviders.SolidColorProvider;
-import data.aliases.AttribAliases;
 import graphics.ShapesBuffer;
 class DynamicAttributeAssigner<T:AttribSet> {
     var attrs:T;

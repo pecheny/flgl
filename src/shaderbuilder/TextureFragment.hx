@@ -36,7 +36,6 @@ class TextureFragment implements ShaderElement {
     function new(attr, vary) {
         this.uv = attr;
         this.sampler = vary;
-        trace("CON " + attr  + " " + vary);
     }
 
     public function getDecls():String {
