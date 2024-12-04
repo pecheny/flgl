@@ -1,28 +1,61 @@
 package shaderbuilder;
+
 import bindings.GLProgram;
+import lime.graphics.opengl.GLShader;
 import data.aliases.AttribAliases;
 import data.aliases.VaryingAliases;
+
 class ShaderBase {
     public var vs(default, null):String;
     public var fs(default, null):String;
 
     public function create(gl) {
+        #if debug
+        return fromSources(gl, vs, fs);
+        #end
         return GLProgram.fromSources(gl, vs, fs);
     }
+
+    #if debug
+    static function fromSources(gl, vertexSource:String, fragmentSource:String):GLProgram {
+        var vertexShader = GLShader.fromSource(gl, vertexSource, gl.VERTEX_SHADER);
+        var info = gl.getShaderInfoLog(vertexShader);
+        if (info != null)
+            trace(info);
+
+        var fragmentShader = GLShader.fromSource(gl, fragmentSource, gl.FRAGMENT_SHADER);
+        info = gl.getShaderInfoLog(fragmentShader);
+        if (info != null)
+            trace(info);
+
+        var program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+
+        if (gl.getProgramParameter(program, gl.LINK_STATUS) == 0) {
+            var message = "Unable to initialize the shader program";
+            message += "\n" + gl.getProgramInfoLog(program);
+            trace(message);
+        }
+
+        return program;
+    }
+    #end
 
     public function new(vertEls:Array<ShaderElement>, fragEls:Array<ShaderElement>) {
         var vs = new ShaderBuilder();
         for (ve in vertEls)
             vs.addNode(ve);
         this.vs = vs.build();
-//        trace(this.vs);
+        //        trace(this.vs);
 
         var fs = new ShaderBuilder();
         for (fe in fragEls)
             fs.addNode(fe);
         this.fs = fs.buildFragment();
-//        trace(this.fs);
-//        trace(TextureShader.instance.vs  + " " + TextureShader.instance.fs);
+        //        trace(this.fs);
+        //        trace(TextureShader.instance.vs  + " " + TextureShader.instance.fs);
     }
 }
 
@@ -30,37 +63,26 @@ class TextureShader extends ShaderBase {
     public static var instance(default, null) = new TextureShader();
 
     function new() {
-        super(
-            [PosPassthrough.instance,
-            Uv0Passthrough.instance],
-            [TextureFragment.get(0, 0)]
-        );
+        super([PosPassthrough.instance, Uv0Passthrough.instance], [TextureFragment.get(0, 0)]);
         // trace(vs);
         // trace(fs);
     }
 }
+
 class VertColorShader extends ShaderBase {
     public static var instance(default, null) = new VertColorShader();
+
     function new() {
-        super(
-            [PosPassthrough.instance,
-            ColorPassthroughVert.instance],
-            [ColorPassthroughFrag.instance]
-        );
+        super([PosPassthrough.instance, ColorPassthroughVert.instance], [ColorPassthroughFrag.instance]);
     }
 }
 
 class ShaderBuilder {
     var nodes:Array<ShaderElement> = [];
-    inline static var FRAG_HEADER =
-        #if (!desktop || rpi)
-    "precision mediump float;"
-        #else
-        ""
-    #end;
 
-    public function new() {
-    }
+    inline static var FRAG_HEADER = #if (!desktop || rpi) "precision mediump float;" #else "" #end;
+
+    public function new() {}
 
     public function addNode(n:ShaderElement) {
         nodes.push(n);
@@ -83,7 +105,6 @@ class ShaderBuilder {
         return decls + "\n" + body;
     }
 }
-
 
 class PosPassthrough implements ShaderElement {
     public static var instance(default, null) = new PosPassthrough();
@@ -118,7 +139,6 @@ class ColorPassthroughVert implements ShaderElement {
     }
 }
 
-
 class ColorPassthroughFrag implements ShaderElement {
     public static var instance(default, null) = new ColorPassthroughFrag();
 
@@ -134,7 +154,6 @@ class ColorPassthroughFrag implements ShaderElement {
            gl_FragColor = ${AttribAliases.NAME_COLOR_OUT};';
     }
 }
-
 
 class Uv0Passthrough implements ShaderElement {
     public static var instance(default, null) = new Uv0Passthrough();
@@ -193,7 +212,7 @@ class ApplyVertColorFrag implements ShaderElement {
 }
 
 class ApplyUnoformColorFrag implements ShaderElement {
-    public static var instance(default, null) = new ApplyUnoformColorFrag ();
+    public static var instance(default, null) = new ApplyUnoformColorFrag();
 
     function new() {}
 
