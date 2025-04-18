@@ -31,8 +31,8 @@ class CircleShader implements ShaderElement {
 
     public function getExprs():String {
         return '
-            float val = circle($r2) * (1. - circle($r1));
-            gl_FragColor = vec4(1., 1., 1., val);
+            float val = circle($r2) * (1. - circle($r1)) ;
+            ${FragColorElement.outColor}.a *= val;
         ';
 
     }

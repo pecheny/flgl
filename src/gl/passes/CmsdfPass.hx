@@ -1,4 +1,5 @@
 package gl.passes;
+import shaderbuilder.FragColorElement;
 import gl.sets.CMSDFSet;
 import gl.sets.MSDFSet;
 import shaderbuilder.MSDFShader;
@@ -15,7 +16,8 @@ class CmsdfPass extends PassBase<CMSDFSet> {
         vertElems.push(PosPassthrough.instance,);
         vertElems.push(smoothShaderEl);
 
+        fragElems.push(FragColorAssignVertColor.instance);
         fragElems.push(MSDFFrag.instance);
-        fragElems.push(ApplyVertColorFrag.instance);
+        fragElems.push(FragColorElement.instance);
     }
 }

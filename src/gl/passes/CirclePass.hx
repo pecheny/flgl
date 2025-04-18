@@ -1,5 +1,6 @@
 package gl.passes;
 
+import shaderbuilder.FragColorElement;
 import gl.sets.CircleSet;
 import shaderbuilder.CircleShader;
 import shaderbuilder.SnaderBuilder;
@@ -14,7 +15,8 @@ class CirclePass extends PassBase<CircleSet> {
         vertElems.push(new GeneralPassthrough(CircleSet.AASIZE_IN, CircleSet.AASIZE));
         vertElems.push(ColorPassthroughVert.instance);
 
+        fragElems.push(FragColorAssignVertColor.instance);
         fragElems.push(CircleShader.instance);
-        fragElems.push(ApplyVertColorFrag.instance);
+        fragElems.push(FragColorElement.instance);
     }
 }

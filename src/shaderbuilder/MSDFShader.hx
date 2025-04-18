@@ -39,11 +39,9 @@ class MSDFFrag implements ShaderElement {
 						// spread field range over 1px for antialiasing
 						float fillAlpha = 	smoothstep(acut-$smothness, acut +$smothness, sigDist );
 
-                        float strokeWidth = 0.;
-						float strokeAlpha =	smoothstep(acut, acut + $smothness, sigDist + strokeWidth);
-						vec4 strokeColor = vec4(0.0, 0.0, 0.0, 1.0);
-
-
+                        // float strokeWidth = 0.;
+						// float strokeAlpha =	smoothstep(acut, acut + $smothness, sigDist + strokeWidth);
+						// vec4 strokeColor = vec4(0.0, 0.0, 0.0, 1.0);
 
 						vec4 col = vec4(.5, .5, .5, .5);
 						// vec4 otp = (
@@ -53,7 +51,7 @@ class MSDFFrag implements ShaderElement {
 						// 	* (1.0 - fillAlpha)
 						// );
 //						gl_FragColor = col;
-						gl_FragColor.a = fillAlpha;
+						${FragColorElement.outColor}.a *= fillAlpha;
 
 ';
 
