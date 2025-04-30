@@ -1,5 +1,6 @@
 package graphics;
 
+import data.aliases.AttribAliases;
 import gl.AttribSet;
 import gl.sets.CircleSet;
 import haxe.io.Bytes;
@@ -22,7 +23,7 @@ class PhAntialiasing<T:AttribSet> {
 
     public function writePostions(target:Bytes, vertOffset = 0, transformer) {
         var aasize = smoothness * pixelSize.pixelSizeInUVSpace;
-        att.fillFloat(target, CircleSet.AASIZE_IN, aasize, vertOffset, count);
+        att.fillFloat(target, AttribAliases.AASIZE_IN, aasize, vertOffset, count);
     }
 }
 

@@ -1,4 +1,5 @@
 package data.aliases;
+
 @:keep
 @:expose
 class AttribAliases {
@@ -11,4 +12,10 @@ class AttribAliases {
     public static inline var NAME_SPEED = "speed";
     public static inline var NAME_SIZE = "size";
     public static inline var NAME_UV_0 = "uv0";
+
+    /**
+        Thickness of "antialiasing zone" given in onits of UV-space.
+    **/
+    public static inline var AASIZE_IN = "aasizeIn";
+    public static inline var AASIZE = "aasize";
 }

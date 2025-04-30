@@ -1,5 +1,16 @@
 package graphics.shapes;
 
+import Axis2D;
+import data.IndexCollection;
+import data.aliases.AttribAliases;
+import gl.AttribSet;
+import gl.ValueWriter;
+import gl.sets.CircleSet;
+import graphics.shapes.Shape;
+import graphics.shapes.SquareShape;
+import haxe.ds.ReadOnlyArray;
+import haxe.io.Bytes;
+import macros.AVConstructor;
 
 class SquareShape<T:AttribSet> implements Shape {
     var pos:AVector2D<Float>;
@@ -47,5 +58,24 @@ class SquareShape<T:AttribSet> implements Shape {
 
     public function getVertsCount():Int {
         return 4;
+    }
+}
+
+@:access(graphics.shapes.SquareShape)
+class SquareAntialiasing<T:AttribSet> {
+    var att:T;
+    var square:SquareShape<T>;
+    var screenSize:ReadOnlyAVector2D<Int>;
+    var smoothness = 6.;
+
+    public function new(att, square, screen) {
+        this.att = att;
+        this.square = square;
+        this.screenSize = screen;
+    }
+
+    public function writePostions(target:Bytes, vertOffset = 0, _) {
+        var aasize = smoothness / (square.size * square.lineScales[horizontal] * screenSize[horizontal]);
+        att.fillFloat(target, AttribAliases.AASIZE_IN, aasize, vertOffset, 4);
     }
 }

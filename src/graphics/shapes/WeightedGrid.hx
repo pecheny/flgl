@@ -50,7 +50,7 @@ class GridFactoryBase<T:AttribSet> {
 
     public function new(attrs) {
         this.attrs = attrs;
-        aaAttrRequired = attrs.hasAttr(CircleSet.AASIZE_IN);
+        aaAttrRequired = attrs.hasAttr(AttribAliases.AASIZE_IN);
         uvWeights = createUVWeights();
     }
 

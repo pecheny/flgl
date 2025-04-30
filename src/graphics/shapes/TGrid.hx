@@ -3,16 +3,11 @@ package graphics.shapes;
 import Axis2D;
 import a2d.Placeholder2D;
 import a2d.WidgetInPixels;
-import a2d.transform.WidgetToScreenRatio;
-import al.core.MultiRefresher;
 import al.core.WidgetContainer.Refreshable;
-import data.IndexCollection;
 import data.aliases.AttribAliases;
 import fu.graphics.ShapeWidget;
 import gl.AttribSet;
-import gl.sets.CircleSet;
 import graphics.shapes.WeightedGrid;
-import haxe.io.Bytes;
 import macros.AVConstructor;
 class TGridWeightsWriter implements Refreshable {
     var wwr:WeightedAttWriter;

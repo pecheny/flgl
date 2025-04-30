@@ -1,7 +1,8 @@
 package shaderbuilder;
 
-import gl.sets.CircleSet;
+import data.aliases.AttribAliases;
 import data.aliases.VaryingAliases;
+import gl.sets.CircleSet;
 
 class CircleShader implements ShaderElement {
     public static var instance = new CircleShader();
@@ -9,10 +10,11 @@ class CircleShader implements ShaderElement {
     static var uv = VaryingAliases.UV_0;
     static var r1 = CircleSet.R1_OUT;
     static var r2 = CircleSet.R2_OUT;
-    static var aa = CircleSet.AASIZE;
+    static var aa = AttribAliases.AASIZE;
 
     function new() {}
-// aa - thickness of antialiasing zone. sqrt(r) - empirical multiplier to make antialiasing visually similar
+
+    // aa - thickness of antialiasing zone. sqrt(r) - empirical multiplier to make antialiasing visually similar
     public function getDecls():String {
         return ' varying vec2 $uv; 
                 varying float $aa;
@@ -26,7 +28,6 @@ class CircleShader implements ShaderElement {
                                         dot(dist, dist) * 4.0);
                 }
         ';
-
     }
 
     public function getExprs():String {
@@ -34,6 +35,5 @@ class CircleShader implements ShaderElement {
             float val = circle($r2) * (1. - circle($r1)) ;
             ${FragColorElement.outColor}.a *= val;
         ';
-
     }
 }
