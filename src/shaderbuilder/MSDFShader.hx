@@ -1,4 +1,5 @@
 package shaderbuilder;
+
 import gl.GLDisplayObject.GLState;
 import bindings.GLUniformLocation;
 import data.aliases.AttribAliases;
@@ -8,60 +9,38 @@ import gl.aspects.TextureBinder;
 import gl.sets.MSDFSet;
 import shaderbuilder.SnaderBuilder;
 
-
 class MSDFFrag implements ShaderElement {
     public static var instance = new MSDFFrag();
     static var uv_v = VaryingAliases.UV_0;
     static var smothness = MSDFShader.smoothness;
 
-
     public function new() {}
 
-    public function getDecls():String {return'
-                    // uniform vec4 ${MSDFShader.color};
-                    varying float $smothness;
-					uniform sampler2D ${MSDFShader.glyphAtlas};
-					varying vec2 $uv_v;
+    public function getDecls():String {
+        return '
+            varying float $smothness;
+            uniform sampler2D ${MSDFShader.glyphAtlas};
+            varying vec2 $uv_v;
 
-					float median(float r, float g, float b) {
-					    return max(min(r, g), min(max(r, g), b));
-					}';
+            float median(float r, float g, float b) {
+                return max(min(r, g), min(max(r, g), b));
+            }';
     }
 
     public function getExprs():String {
-        /* смуснес подогнана для вычесления от -s до + s,
-						но формула для обводки не подходит в этом случае, фон перестает быть прозрачным. */
-        return
-            ' float vFieldRangeDisplay_px = 120.0;
-        			    vec4 sample = texture2D(${MSDFShader.glyphAtlas}, $uv_v);
-        			    float acut = 0.5;
-						float sigDist =  median(sample.r, sample.g, sample.b);
-						// spread field range over 1px for antialiasing
-						float fillAlpha = 	smoothstep(acut-$smothness, acut +$smothness, sigDist );
-
-                        // float strokeWidth = 0.;
-						// float strokeAlpha =	smoothstep(acut, acut + $smothness, sigDist + strokeWidth);
-						// vec4 strokeColor = vec4(0.0, 0.0, 0.0, 1.0);
-
-						vec4 col = vec4(.5, .5, .5, .5);
-						// vec4 otp = (
-						// 	${MSDFShader.color}	* fillAlpha * color.a
-						// 	+
-						// 	strokeColor * strokeColor.a * strokeAlpha
-						// 	* (1.0 - fillAlpha)
-						// );
-//						gl_FragColor = col;
-						${FragColorElement.outColor}.a *= fillAlpha;
-
-';
-
+        return '   float vFieldRangeDisplay_px = 120.0;
+            float acut = 0.5;
+            vec4 sample = texture2D(${MSDFShader.glyphAtlas}, $uv_v);
+            float sigDist =  median(sample.r, sample.g, sample.b);
+            float r = clamp($smothness, 0., 0.5);
+            // spread field range over 1px for antialiasing
+            float fillAlpha = 	smoothstep(acut-r, acut +r, sigDist );
+            ${FragColorElement.outColor}.a *= fillAlpha; ';
     }
 }
 
-
 // todo Use linear function for now, check if logistic function has meaning for edge cases
-
-//class LogisticSmoothnessCalculator implements ShaderElement {
+// class LogisticSmoothnessCalculator implements ShaderElement {
 //    public static var instance(default, null) = new LogisticSmoothnessCalculator();
 //
 //    function new() {}
@@ -79,15 +58,14 @@ class MSDFFrag implements ShaderElement {
 //                           float ert = exp(r*t);
 //                           return 0.0 +  k -(k * p0 * ert) / (k + p0 *(ert - 1.));
 //    }
-//' ;
+// ' ;
 //    }
 //
 //    public function getExprs():String {
 //        return '
 //                   ${MSDFShader.smoothness} = logist(${MSDFSet.NAME_DPI});';
 //    }
-//}
-
+// }
 
 class MSDFShader extends ShaderBase {
     public static var instence = new MSDFShader();
@@ -97,16 +75,12 @@ class MSDFShader extends ShaderBase {
     public static inline var color = "color";
     public static inline var position = AttribAliases.NAME_POSITION;
     public static inline var uv = AttribAliases.NAME_UV_0;
-//    public static inline var atlasScale = MSDFSet.NAME_ATLAS_SCALE;
 
+    //    public static inline var atlasScale = MSDFSet.NAME_ATLAS_SCALE;
     static var smoothShaderEl:GeneralPassthrough;
 
     public function new() {
         smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, smoothness);
-        super(
-            [PosPassthrough.instance, Uv0Passthrough.instance, smoothShaderEl],
-            [MSDFFrag.instance]
-        );
+        super([PosPassthrough.instance, Uv0Passthrough.instance, smoothShaderEl], [MSDFFrag.instance]);
     }
-
 }
