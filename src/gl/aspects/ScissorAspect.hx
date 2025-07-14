@@ -72,9 +72,9 @@ class ScissorAspect implements RenderingAspect {
     public function bind(state:GLState<Dynamic>):Void {
         var x = Std.int(this.x / ar[horizontal] * stg.stageWidth / 2);
         var y = Std.int(this.y / ar[vertical] * stg.stageHeight / 2);
-        var width = Std.int(this.width  / ar[horizontal]* stg.stageWidth / 2);
+        var width = Std.int(this.width / ar[horizontal] * stg.stageWidth / 2);
         var height = Std.int(this.height / ar[vertical] * stg.stageHeight / 2);
-        state.gl.scissor(x, y, width, height);
+        state.gl.scissor(x, stg.stageHeight - y - height, width, height);
     }
 
     public function unbind(state:GLState<Dynamic>):Void {
