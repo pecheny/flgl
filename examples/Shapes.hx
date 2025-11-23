@@ -1,3 +1,4 @@
+import graphics.shapes.Shape;
 import bindings.GLProgram;
 import bindings.WebGLRenderContext;
 import data.aliases.AttribAliases;
@@ -14,8 +15,8 @@ class Shapes {
         var root = new WebGlRenderer();
         var gldo = new GLDisplayObject(ColorSet.instance, create, null);
         var shapes = new ShapeRenderer(ColorSet.instance);
-        shapes.addChild(new QuadGraphicElement(ColorSet.instance));
-        shapes.initChildren();
+        var children:Array<Shape> = [new QuadGraphicElement(ColorSet.instance)];
+        shapes.initChildren(children);
         var cw = ColorSet.instance.getWriter(AttribAliases.NAME_COLOR_IN);
         for (i in 0...shapes.getVertCount()) {
             cw[0].setValue(shapes.buffer, i, 255);

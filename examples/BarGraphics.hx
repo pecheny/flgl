@@ -1,3 +1,4 @@
+import graphics.shapes.Shape;
 import Axis2D;
 import bindings.GLProgram;
 import bindings.WebGLRenderContext;
@@ -22,26 +23,27 @@ class BarGraphics {
         resizer.resize(root.width, root.height);
 
         var gldo = new GLDisplayObject(ColorSet.instance, create, null);
-        var shapes = new ShapeRenderer(ColorSet.instance);
+        var shapeRend = new ShapeRenderer(ColorSet.instance);
+        var shapes = [];
         createShapes(resizer, shapes);
-        shapes.initChildren();
+        shapeRend.initChildren(shapes);
         var liquidTr = new LiquidTransformer(resizer.getAspectRatio());
         // liquidTr.setBounds(0.5, 0.5, 1, 1);
         liquidTr.setBounds(0,0, 0.5, 0.5);
         resizer.addResizable(liquidTr);
-        shapes.transform = liquidTr.transformValue;
+        shapeRend.transform = liquidTr.transformValue;
         // var propTr = new ProportionalTransformer(resizer.getAspectRatio());
         // propTr.setBounds(-0.5,-0.5, 1,1);
         // resizer.addResizable(propTr);
         // shapes.transform = propTr.transformValue;
-        fillColor(shapes);
-        gldo.addView(shapes);
+        fillColor(shapeRend);
+        gldo.addView(shapeRend);
         root.addChild(gldo);
         root.render();
     }
 
-    static function createShapes(root:StageResizer, shapes) {
-        var lineCalc = new LineThicknessCalculator(root.getAspectRatio());
+    static function createShapes(root:StageResizer, shapes:Array<Shape>) {
+        var lineCalc = new LineThicknessCalculator(root.getAspectRatio(), AVConstructor.create(0,0), 0.01);
         root.addResizable(lineCalc);
         var bb = new BarsBuilder(root.getAspectRatio(), lineCalc.lineScales());
         var elements = [
@@ -53,7 +55,7 @@ class BarGraphics {
         var attrs = ColorSet.instance;
         for (e in elements) {
             var sh = bb.create(attrs, e);
-            shapes.addChild(sh);
+            shapes.push(sh);
         }
     }
 
