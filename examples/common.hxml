@@ -3,4 +3,5 @@
 -lib taxis
 -D analyzer-optimize
 -D js-source-map
+-D message.reporting=classic
 -dce full

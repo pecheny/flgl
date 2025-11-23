@@ -1,4 +1,5 @@
 common.hxml
+-lib alayout
 -main BarGraphics
 -cp ../backends/html
 --js out/main.js
