@@ -16,6 +16,10 @@ class ProjectionMatrixAspect implements RenderingAspect implements al.core.AllAx
 
     public function bind(state:GLState<Dynamic>):Void {
         var gl = state.gl;
+        #if debug
+        if (!state.uniforms.exists(ProjectionMatrixElement.matrix))
+            throw 'Uniform "${ProjectionMatrixElement.matrix}" is not defined in the pass.';
+        #end
         gl.uniformMatrix4fv(state.uniforms[ProjectionMatrixElement.matrix], false, data);
     }
 
