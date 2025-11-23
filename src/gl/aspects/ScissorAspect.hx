@@ -1,4 +1,5 @@
 package gl.aspects;
+
 import Axis2D;
 import a2d.Placeholder2D;
 import al.core.AxisApplier;
@@ -7,45 +8,48 @@ import gl.aspects.RenderingAspect;
 
 // TODO extract dependency on alayout into external class
 
-typedef  DisplayObject = ScissorAspect;//{x:Float, y:Float, width:Float, height:Float }
+typedef DisplayObject = ScissorAspect; // {x:Float, y:Float, width:Float, height:Float }
 
 class DOVerticalApplier implements AxisApplier {
     var target:DisplayObject;
 
-    public function new(t) this.target = t;
-
+    public function new(t)
+        this.target = t;
 
     public function apply(pos:Float, size:Float):Void {
         target.y = pos;
         target.height = size;
     }
 }
+
 class DOHorizontalApplier implements AxisApplier {
     var target:DisplayObject;
 
-    public function new(t) this.target = t;
-
+    public function new(t)
+        this.target = t;
 
     public function apply(pos:Float, size:Float):Void {
         target.x = pos;
         target.width = size;
     }
 }
+
 class DOVerticalPosApplier implements AxisApplier {
     var target:DisplayObject;
 
-    public function new(t) this.target = t;
-
+    public function new(t)
+        this.target = t;
 
     public function apply(pos:Float, size:Float):Void {
         target.y = pos;
     }
 }
+
 class DOHorizontalPosApplier implements AxisApplier {
     var target:DisplayObject;
 
-    public function new(t) this.target = t;
-
+    public function new(t)
+        this.target = t;
 
     public function apply(pos:Float, size:Float):Void {
         target.x = pos;
@@ -54,8 +58,7 @@ class DOHorizontalPosApplier implements AxisApplier {
 
 class ScissorAspect implements RenderingAspect {
     var stg:openfl.display.Stage;
-    var ar:ReadOnlyAVector2D<Float>;// == a2d.AspectRatio;
-
+    var ar:ReadOnlyAVector2D<Float>; // == a2d.AspectRatio;
 
     public var x:Float = 0;
     public var y:Float = 0;
@@ -81,4 +84,3 @@ class ScissorAspect implements RenderingAspect {
         state.gl.scissor(0, 0, stg.stageWidth, stg.stageHeight);
     }
 }
-

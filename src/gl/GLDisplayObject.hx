@@ -1,4 +1,5 @@
 package gl;
+
 #if lime
 import openfl.display.OpenGLRenderer;
 import openfl.events.RenderEvent;
@@ -10,20 +11,20 @@ import bindings.GL;
 import gl.aspects.RenderingAspect;
 import bindings.GLBuffer;
 import bindings.GLProgram;
-import bindings.WebGLRenderContext ;
+import bindings.WebGLRenderContext;
 import bindings.GLUniformLocation;
 import bindings.GLDrawcall;
 import gl.AttribSet;
 import data.ShadersAttrs;
-
 #if nme
-         import nme.gl.GL as gl;
+import nme.gl.GL as gl;
 #end
 
 class GLState<T:AttribSet> {
     public var program(default, null):GLProgram;
     public var uniforms(default, null):Map<String, GLUniformLocation> = new Map();
     public var attrsState(default, null):ShadersAttrs;
+
     var attrs:T;
 
     public var gl(default, null):WebGLRenderContext;
@@ -44,22 +45,21 @@ class GLState<T:AttribSet> {
     }
 }
 
-class GLDisplayObject<T:AttribSet> implements GLDrawcall
-#if openfl extends openfl.display.Sprite
-    #end {
+class GLDisplayObject<T:AttribSet> implements GLDrawcall #if openfl extends openfl.display.Sprite #end {
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
     var indicesBuffer:GLBuffer;
-    var targets:RenderTarget<T> ;
+    var targets:RenderTarget<T>;
     var renderingAspect:RenderingAspect;
     var gl:WebGLRenderContext;
     var set:T;
 
     var viewport:ViewportRect;
+
     public var srcAlpha = GL.SRC_ALPHA;
     public var dstAlpha = GL.ONE_MINUS_SRC_ALPHA;
 
-    var shaderFactory:WebGLRenderContext -> GLState<T>;
+    var shaderFactory:WebGLRenderContext->GLState<T>;
     var state:GLState<T>;
 
     public function new(set:T, shaderFactory, aspect:RenderingAspect) {
@@ -79,14 +79,16 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
     var inited = false;
 
     function init(gl:WebGLRenderContext) {
-        if (inited)return;
+        if (inited)
+            return;
         this.gl = gl;
         buffer = gl.createBuffer();
         indicesBuffer = gl.createBuffer();
         state = shaderFactory(gl);
         inited = true;
     }
-#if openfl
+
+    #if openfl
     function onEnterFrame(e) {
         invalidate();
     }
@@ -96,6 +98,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
         invalidate();
         #end
     }
+
     function onRender(event) {
         var renderer:OpenGLRenderer = cast event.renderer;
         render(renderer.gl);
@@ -103,26 +106,25 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
     #end
 
     public function addView(v:Renderable<T>) {
-        children.push(v) ;
+        children.push(v);
     }
 
     public function removeView(v:Renderable<T>) {
-        children.remove(v) ;
+        children.remove(v);
     }
-
 
     public function render(gl:WebGLRenderContext) {
         init(gl);
         var NO_ERROR =
-        #if lime
-        gl.NO_ERROR;
-        #else
-        WebGLRenderContext.NO_ERROR;
-        #end
+            #if lime
+            gl.NO_ERROR;
+            #else
+            WebGLRenderContext.NO_ERROR;
+            #end
         var err = gl.getError();
         if (err != NO_ERROR)
             trace("GL err " + err);
-        if(gl.isContextLost() || this.gl.isContextLost())
+        if (gl.isContextLost() || this.gl.isContextLost())
             trace("context lost");
 
         targets.flush();
@@ -131,7 +133,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
             child.render(targets);
         }
 
-        if(targets.indsCount() == 0)
+        if (targets.indsCount() == 0)
             return;
         gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
         set.enableAttributes(gl, state.attrsState);
@@ -147,7 +149,7 @@ class GLDisplayObject<T:AttribSet> implements GLDrawcall
         gl.blendFunc(srcAlpha, dstAlpha);
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indicesBuffer);
         gl.bufferData(GL.ELEMENT_ARRAY_BUFFER, targets.inds.getView(), GL.DYNAMIC_DRAW);
-        gl.drawElements(GL.TRIANGLES,Std.int( targets.indsCount() ), GL.UNSIGNED_SHORT, 0);
+        gl.drawElements(GL.TRIANGLES, Std.int(targets.indsCount()), GL.UNSIGNED_SHORT, 0);
         gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, null);
         gl.useProgram(null);
         gl.bindBuffer(GL.ARRAY_BUFFER, null);
