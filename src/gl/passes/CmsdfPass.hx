@@ -9,7 +9,7 @@ class CmsdfPass extends PassBase<CMSDFSet> {
     static var smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, MSDFShader.smoothness);
 
     public function new() {
-        super(CMSDFSet.instance, "cmsdf", "text");
+        super(CMSDFSet.instance, "cmsdf");
 
         vertElems.push(ColorPassthroughVert.instance,);
         vertElems.push(Uv0Passthrough.instance,);

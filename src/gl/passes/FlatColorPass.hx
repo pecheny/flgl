@@ -5,7 +5,7 @@ import shaderbuilder.SnaderBuilder;
 
 class FlatColorPass extends PassBase<ColorSet> {
     public function new() {
-        super(ColorSet.instance, "color", "color");
+        super(ColorSet.instance, "color");
         vertElems.push(ColorPassthroughVert.instance);
         vertElems.push(PosPassthrough.instance);
         fragElems.push(ColorPassthroughFrag.instance);

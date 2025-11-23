@@ -7,7 +7,7 @@ class MsdfPass extends PassBase<MSDFSet> {
     static var smoothShaderEl = new GeneralPassthrough(MSDFSet.NAME_DPI, MSDFShader.smoothness);
 
     public function new() {
-        super(MSDFSet.instance, "msdf", "text");
+        super(MSDFSet.instance, "msdf");
         uniforms.push("color");
         vertElems.push(Uv0Passthrough.instance,);
         vertElems.push(PosPassthrough.instance,);

@@ -8,7 +8,7 @@ import shaderbuilder.SnaderBuilder;
 
 class CirclePass extends PassBase<CircleSet> {
     public function new() {
-        super(CircleSet.instance, "circle", "circle");
+        super(CircleSet.instance, "circle");
         vertElems.push(Uv0Passthrough.instance);
         vertElems.push(PosPassthrough.instance);
         vertElems.push(new GeneralPassthrough(CircleSet.R1_IN, CircleSet.R1_OUT));
