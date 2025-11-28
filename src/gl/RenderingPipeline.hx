@@ -20,10 +20,6 @@ class RenderingPipeline {
         shaderRegistry = new ShaderRegistry();
     }
 
-    public function hasDrawcallType(type) {
-        return (shaderRegistry.getDescr(type) != null);
-    }
-
     public function addAspect(a:RenderingAspect) {
         renderAspectBuilder.addShared(a);
     }
@@ -104,7 +100,6 @@ class RenderingPipeline {
     public function addPass<TAtt:AttribSet>(type:DrawcallType, p:PassBase<TAtt>) {
         shaderRegistry.reg(p.getShaderDesc());
         handlers[type] = p;
-
     }
 }
 

@@ -16,7 +16,6 @@ typedef ShaderDescr<T:AttribSet> = {
 
 interface IShaderRegistry {
     function getState<T:AttribSet>(atts:T, gl:WebGLRenderContext, name:String):GLState<T>;
-    function getAttributeSet(name:String):AttribSet;
 }
 
 class ShaderRegistry implements IShaderRegistry {
@@ -24,10 +23,6 @@ class ShaderRegistry implements IShaderRegistry {
     var shaders:Map<String, GLState<Dynamic>> = new Map();
 
     public function new() {}
-
-    function getDescr(name):ShaderDescr<Dynamic> {
-        return descrs[name];
-    }
 
     public function getState<T:AttribSet>(att:T, gl, name):GLState<T> {
         if (shaders.exists(name))
@@ -61,9 +56,5 @@ class ShaderRegistry implements IShaderRegistry {
         shaders[name] = state;
         state.init(gl, program, descr.uniforms);
         return state;
-    }
-
-    public function getAttributeSet(name:String):AttribSet {
-        return getDescr(name).attrs;
     }
 }
