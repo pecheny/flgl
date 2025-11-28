@@ -44,4 +44,15 @@ class PassBase<TAtt:AttribSet> {
             uniforms: uniforms
         };
     }
+    
+    @:access("gl.passes.PassBase")
+    public function clone() {
+        var r = new PassBase(attr, shaderType);
+        r.vertElems = vertElems.copy();
+        r.fragElems = fragElems.copy();
+        r.uniforms = uniforms.copy();
+        r.alias = alias.copy();
+        return r;
+    }
+
 }
