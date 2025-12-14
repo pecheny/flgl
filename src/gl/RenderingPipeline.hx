@@ -29,7 +29,7 @@ class RenderingPipeline {
         return this;
     }
 
-    public function createContainer(descr):GLNode {
+    public function createContainer(descr):Null<ContainerGLNode>{
         var node = processNode(descr);
         renderAspectBuilder.reset();
         return node;
@@ -37,12 +37,12 @@ class RenderingPipeline {
 
     var handlers:Map<String, PassBase<Dynamic>> = new Map();
 
-    public function processNode(node:Xml, ?container:Null<ContainerGLNode>):GLNode {
+    public function processNode(node:Xml, ?container:Null<ContainerGLNode>):Null<ContainerGLNode> {
         return switch (node.nodeName) {
             case "container": {
-                    var c = new ContainerGLNode();
+                    var c = new ContainerGLNodeImpl();
                     if (container != null)
-                        container.addChild(c);
+                        container.addNode(c);
                     for (child in node.elements()) {
                         processNode(child, c);
                     }
@@ -67,12 +67,17 @@ class RenderingPipeline {
                         for (a in aliases[drawcallType])
                             gldo.name += a(node); // pass.layerNameExtractor(node);
                     if (container != null)
-                        container.addChild(gldo);
-                    gldo;
+                        container.addNode(gldo);
+                    null;
                 }
             case _:
-                throw "wrong " + node.nodeName;
+                unknownNodeHandler(node, container);
+                null;
         }
+    }
+    
+    public dynamic function unknownNodeHandler(node:Xml, ?container:Null<ContainerGLNode>) {
+        throw "wrong " + node.nodeName;
     }
 
     var aspectFactories:Map<String, Array<Xml->RenderingAspect>> = new Map();

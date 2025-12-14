@@ -9,19 +9,41 @@ import gl.RenderTarget;
 import gl.Renderable;
 import gl.aspects.RenderingAspect;
 
-class GLNode {
+interface GLNode {
+
+	public var name(get, set):String;
+
+    public function addAspect(a:RenderingAspect):Void;
+
+    public function render(gl:WebGLRenderContext):Void;
+}
+
+class GLNodeBase implements GLNode {
     var renderingAspects:Array<RenderingAspect> = [];
 
-    public var name:String = "";
+	@:isVar public var name(get, set):String = ""; 
 
     public function addAspect(a) {
         renderingAspects.push(a);
     }
 
     public function render(gl:WebGLRenderContext) {}
+
+    function set_name(value:String):String {
+        return name = value;
+    }
+
+	function get_name():String {
+		return name;
+	}
 }
 
-class ContainerGLNode extends GLNode {
+interface ContainerGLNode extends GLNode {
+    public var children(default, null):Array<GLNode>;
+    public function addNode(ch:GLNode):Void;
+}
+
+class ContainerGLNodeImpl extends GLNodeBase implements ContainerGLNode {
     public var children(default, null):Array<GLNode> = [];
 
     static var state = new GLState(null);
@@ -44,12 +66,12 @@ class ContainerGLNode extends GLNode {
             a.unbind(state);
     }
 
-    public function addChild(ch) {
+    public function addNode(ch) {
         children.push(ch);
     }
 }
 
-class ShadedGLNode<T:AttribSet> extends GLNode {
+class ShadedGLNode<T:AttribSet> extends GLNodeBase {
     var children:Array<Renderable<T>> = [];
     var buffer:GLBuffer;
     var indicesBuffer:GLBuffer;
