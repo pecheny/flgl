@@ -6,6 +6,9 @@ import ec.Entity;
 import gl.AttribSet;
 import Type;
 
+/**
+    Aims to put Renderable views from the descending hierarchy to the apropriate drawcall (GLNode) registered by attribute set and alias.
+**/
 @:build(ec.macros.Macros.buildGetOrCreate("onCreate"))
 class RenderableBinder implements CtxBinder {
     var map = new ShadedGLNodesCollection();
