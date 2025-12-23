@@ -43,68 +43,135 @@ class WeightedGrid implements Shape {
     }
 }
 
-class GridFactoryBase<T:AttribSet> {
-    var attrs:T;
-    var uvWeights:AVector2D<Array<Float>>;
-    var aaAttrRequired = false;
+class RoundWeightedGrid extends WeightedGrid {
+    var attrs:CircleSet = CircleSet.instance;
+    var aaAttrRequired = true;
 
-    public function new(attrs) {
-        this.attrs = attrs;
-        aaAttrRequired = attrs.hasAttr(AttribAliases.AASIZE_IN);
-        uvWeights = createUVWeights();
-    }
-
-    public function create(ph:Placeholder2D) {
-        var shw = new ShapeWidget(attrs, ph);
+    public function new(ph:Placeholder2D, posWeights, uvWeights) {
         var writers = attrs.getWriter(AttribAliases.NAME_POSITION);
-        var posWeights = createPosWeights();
         var wwr = new WeightedAttWriter(writers, posWeights);
-        var s = new WeightedGrid(wwr);
-        shw.addChild(s);
+        super(wwr);
+
+        var uvwriters = attrs.getWriter(AttribAliases.NAME_UV_0);
+        var uvWwr = new WeightedAttWriter(uvwriters, uvWeights);
         var sa = createGridWriter(ph, wwr);
         var rr = new MultiRefresher();
         rr.add(sa.refresh);
         ph.axisStates[vertical].addSibling(rr);
-        if (aaAttrRequired)
-            addAACalculator(ph, s, wwr, rr);
-        shw.getBuffer().onInit.listen(addUV.bind(shw));
-        return shw;
-    }
-
-    function createUVWeights():AVector2D<Array<Float>> {
-        throw "abstract: N/A";
-    }
-
-    function createPosWeights():AVector2D<Array<Float>> {
-        throw "abstract: N/A";
+        if (aaAttrRequired) {
+            var wip = new WidgetInPixels(ph);
+            var piuv = new WGridPixelDensity(posWeights, uvWeights, wip);
+            rr.add(() -> {
+                wip.refresh();
+                piuv.direction = wwr.direction;
+                piuv.refresh();
+            });
+            var aac = new PhAntialiasing(attrs, getVertsCount(), piuv);
+            writeAttributes = (target:Bytes, vertOffset = 0, transformer) -> {
+                uvWwr.writeAtts(target, vertOffset, passThrough);
+                aac.writePostions(target, vertOffset, transformer);
+            }
+        } else {
+            writeAttributes = (target:Bytes, vertOffset = 0, transformer) -> {
+                uvWwr.writeAtts(target, vertOffset, passThrough);
+            }
+        }
     }
 
     function createGridWriter(ph, wwr):Refreshable {
         throw "abstract: N/A";
     }
 
-    function addAACalculator(ph, s, wwr, rr) {
-        var wip = new WidgetInPixels(ph);
-        rr.add(wip.refresh);
-        var piuv = new WGridPixelDensity(wwr.weights, uvWeights, wip);
-        rr.add(() -> {
-            piuv.direction = wwr.direction;
-        });
-        rr.add(piuv.refresh);
-        s.writeAttributes = new PhAntialiasing(attrs, s.getVertsCount(), piuv).writePostions;
-    }
-
-    function addUV(shw:ShapeWidget<T>) {
-        var buffer:ShapesBuffer<T> = shw.getBuffer();
-        var vertOffset = 0;
-        var writers = attrs.getWriter(AttribAliases.NAME_UV_0);
-        var wwr = new WeightedAttWriter(writers, uvWeights);
-        wwr.writeAtts(buffer.getBuffer(), vertOffset, (_, v) -> v);
-    }
+    function passThrough(_, v)
+        return v;
 }
 
-class WeightedAttWriter {
+// class GridFactoryBase<T:AttribSet> {
+//     var attrs:T;
+//     var uvWeights:AVector2D<Array<Float>>;
+//     var aaAttrRequired = false;
+//     var uvWwr:WeightedAttWriter;
+
+//     // var uvWriters = attrs.getWriter(AttribAliases.NAME_UV_0);
+
+//     public function new(attrs) {
+//         this.attrs = attrs;
+//         aaAttrRequired = attrs.hasAttr(AttribAliases.AASIZE_IN);
+//         uvWeights = createUVWeights();
+//         var uvWriters = attrs.getWriter(AttribAliases.NAME_UV_0);
+//         uvWwr = new WeightedAttWriter(uvWriters, uvWeights);
+//     }
+
+//     public function create(ph:Placeholder2D) {
+//         // var posWeights = createPosWeights();
+//         // var writers = attrs.getWriter(AttribAliases.NAME_POSITION);
+//         // var wwr = new WeightedAttWriter(writers, posWeights);
+
+//         // var s = new WeightedGrid(wwr);
+//         // var sa = createGridWriter(ph, wwr);
+//         // var rr = new MultiRefresher();
+//         // rr.add(sa.refresh);
+//         // ph.axisStates[vertical].addSibling(rr);
+//         // if (aaAttrRequired) {
+
+//         //     var aac = getAACalculator(ph, s, wwr, rr);
+//         //     s.writeAttributes = (target:Bytes, vertOffset = 0, transformer) -> {
+//         //         uvWwr.writeAtts(target, vertOffset, passThrough);
+//         //         aac.writePostions(target, vertOffset, transformer);
+//         //     }
+//         // } else {
+//         //     s.writeAttributes = (target:Bytes, vertOffset = 0, transformer) -> {
+//         //         uvWwr.writeAtts(target, vertOffset, (_, v) -> v);
+//         //     }
+//         // }
+//         // return s;
+//     }
+
+//     function passThrough(_, v)
+//         return v;
+
+//     public function addUV(buffer:ShapesBuffer<T>, vertOffset = 0) {}
+
+//     function createUVWeights():AVector2D<Array<Float>> {
+//         throw "abstract: N/A";
+//     }
+
+//     function createPosWeights():AVector2D<Array<Float>> {
+//         throw "abstract: N/A";
+//     }
+
+//     function createGridWriter(ph, wwr):Refreshable {
+//         throw "abstract: N/A";
+//     }
+
+//     function getAACalculator(ph, s, wwr, rr) {
+//         var wip = new WidgetInPixels(ph);
+//         var piuv = new WGridPixelDensity(wwr.weights, uvWeights, wip);
+//         rr.add(() -> {
+//             wip.refresh();
+//             piuv.direction = wwr.direction;
+//             piuv.refresh();
+//         });
+//         var aa = new PhAntialiasing(attrs, s.getVertsCount(), piuv);
+//         return aa;
+//     }
+
+//     // function adduv(shw:shapewidget<t>) {
+//     //     var buffer:shapesbuffer<t> = shw.getbuffer();
+//     //     var vertoffset = 0;
+//     //     var writers = attrs.getwriter(attribaliases.name_uv_0);
+//     //     var wwr = new weightedattwriter(writers, uvweights);
+//     //     wwr.writeatts(buffer.getbuffer(), vertoffset, (_, v) -> v);
+//     // }
+// }
+
+interface Directed {
+    public var direction(default, null):Axis2D;
+}
+
+class WeightedAttWriter implements Directed {
     var writers:AttributeWriters;
+    public var verbose:Bool;
 
     public var direction:Axis2D = horizontal;
     public var weights(default, null):AVector2D<Array<Float>>;
@@ -117,6 +184,8 @@ class WeightedAttWriter {
     public inline function writeAtts(target, vertOffset, tr) {
         var aw = weights[horizontal];
         var cw = weights[vertical];
+        if(verbose)
+        trace(aw, cw);
         for (i in 0...cw.length)
             writeLine(target, direction, vertOffset + aw.length * i, 1, aw, tr);
         for (i in 0...aw.length) {

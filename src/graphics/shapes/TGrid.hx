@@ -2,13 +2,10 @@ package graphics.shapes;
 
 import Axis2D;
 import a2d.Placeholder2D;
-import a2d.WidgetInPixels;
 import al.core.WidgetContainer.Refreshable;
-import data.aliases.AttribAliases;
-import fu.graphics.ShapeWidget;
-import gl.AttribSet;
 import graphics.shapes.WeightedGrid;
 import macros.AVConstructor;
+
 class TGridWeightsWriter implements Refreshable {
     var wwr:WeightedAttWriter;
     var ph:Placeholder2D;
@@ -31,35 +28,14 @@ class TGridWeightsWriter implements Refreshable {
     }
 }
 
-class TGridFactory<T:AttribSet> extends GridFactoryBase<T> {
-    override function createUVWeights() {
-        return AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]);
+class RoundTGrid extends RoundWeightedGrid {
+    static var uvWeights = AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]);
+
+    public function new(ph:Placeholder2D) {
+        super(ph, AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]), uvWeights);
     }
 
-    override function createPosWeights() {
-        return AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]);
-    }
-
-    override function createGridWriter(ph:Placeholder2D, wwr:WeightedAttWriter):Refreshable {
+    override function createGridWriter(ph, wwr):Refreshable {
         return new TGridWeightsWriter(ph, wwr);
-    }
-
-    override function addAACalculator(ph, s, wwr, rr) {
-        var wip = new WidgetInPixels(ph);
-        rr.add(wip.refresh);
-        var piuv = new WGridPixelDensity(wwr.weights, uvWeights, wip);
-        rr.add(() -> {
-            piuv.direction = wwr.direction;
-        });
-        rr.add(piuv.refresh);
-        s.writeAttributes = new PhAntialiasing(attrs, s.getVertsCount(), piuv).writePostions;
-    }
-
-    override function addUV(shw:ShapeWidget<T>) {
-        var buffer:ShapesBuffer<T> = shw.getBuffer();
-        var vertOffset = 0;
-        var writers = attrs.getWriter(AttribAliases.NAME_UV_0);
-        var wwr = new WeightedAttWriter(writers, uvWeights);
-        wwr.writeAtts(buffer.getBuffer(), vertOffset, (_, v) -> v);
     }
 }
