@@ -45,4 +45,6 @@ class QuadGraphicElement<T:AttribSet> implements Shape {
     public function getVertsCount():Int {
         return 4;
     }
+    public function initInBuffer(target:Bytes, vertOffset:Int):Void {}
+
 }

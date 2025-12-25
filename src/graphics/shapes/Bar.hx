@@ -1,4 +1,5 @@
 package graphics.shapes;
+
 import data.aliases.AttribAliases;
 import Axis2D;
 import data.IndexCollection;
@@ -15,7 +16,7 @@ class Bar implements Shape {
 
     public function new(att, xt, yt) {
         axis = AVConstructor.create(xt, yt);
-        writers = att.getWriter(AttribAliases.NAME_POSITION) ;
+        writers = att.getWriter(AttribAliases.NAME_POSITION);
     }
 
     public function writePostions(target:Bytes, vertOffset = 0, transformer) {
@@ -31,6 +32,8 @@ class Bar implements Shape {
     public function getIndices() {
         return IndexCollections.QUAD_ODD;
     }
+
+    public function initInBuffer(target:Bytes, vertOffset:Int):Void {}
 }
 
 class BarContainer {
@@ -76,10 +79,11 @@ typedef FixedThiknessDescr = {
 **/
 class FixedThiknessTransformApplier extends BarAxisBase {
     var weights:ReadOnlyArray<Float>;
+
     public var pos:Float = 0;
     public var thikness:Float = 0.1;
-    var lineScales:ReadOnlyAVector2D<Float>;
 
+    var lineScales:ReadOnlyAVector2D<Float>;
 
     public function new(weights, lineScales) {
         this.weights = weights;
@@ -91,7 +95,7 @@ class FixedThiknessTransformApplier extends BarAxisBase {
         var totalWidth = 1 - localTh;
         var lPos = totalWidth * pos;
         for (i in 0...weights.length) {
-            writer[a].setValue(target, vertOffset + i, tr(a, lPos + weights[i] * (thikness * lineScales[a] )));
+            writer[a].setValue(target, vertOffset + i, tr(a, lPos + weights[i] * (thikness * lineScales[a])));
         }
     }
 }
@@ -103,6 +107,7 @@ typedef PortionBarAxisDescr = {
 
 class PortionTransformApplier extends BarAxisBase {
     var weights:ReadOnlyArray<Float>;
+
     public var start:Float = 0;
     public var end:Float = 1;
 
@@ -126,7 +131,7 @@ class BarsBuilder {
 
     public function createAxis(axis:Axis2D, input:BarAxisType):BarAxisBase {
         switch input {
-            case Portion(slot) :
+            case Portion(slot):
                 var apl = new PortionTransformApplier(RectWeights.weights[axis]);
                 apl.start = slot.descr.start;
                 apl.end = slot.descr.end;
@@ -142,15 +147,12 @@ class BarsBuilder {
     }
 
     public function create(attrs, container:BarContainer) {
-        return new Bar(attrs,
-        createAxis(horizontal, container.axis[horizontal]),
-        createAxis(vertical, container.axis[vertical])
-        );
+        return new Bar(attrs, createAxis(horizontal, container.axis[horizontal]), createAxis(vertical, container.axis[vertical]));
     }
 }
 
 class BarAnimationUtils {
-    public static function directUnfold(bar:BarContainer, axis = null):Float -> Void {
+    public static function directUnfold(bar:BarContainer, axis = null):Float->Void {
         if (axis != null) {
             switch bar.axis[axis] {
                 case Portion(slot):

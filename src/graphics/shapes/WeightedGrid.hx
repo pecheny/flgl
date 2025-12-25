@@ -41,6 +41,9 @@ class WeightedGrid implements Shape {
     public function getIndices() {
         return inds;
     }
+    
+    public function initInBuffer(target:Bytes, vertOffset:Int):Void {}
+
 }
 
 class RoundWeightedGrid extends WeightedGrid {
@@ -80,6 +83,8 @@ class RoundWeightedGrid extends WeightedGrid {
 
     function createGridWriter(ph, wwr):Refreshable {
         throw "abstract: N/A";
+    }
+    override function initInBuffer(target:Bytes, vertOffset:Int) {
     }
 
     function passThrough(_, v)
