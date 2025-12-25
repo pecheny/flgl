@@ -1,5 +1,7 @@
 package graphics.shapes;
 
+import gl.sets.CircleSet;
+import haxe.io.Bytes;
 import Axis2D;
 import a2d.Placeholder2D;
 import a2d.transform.WidgetToScreenRatio;
@@ -26,9 +28,31 @@ class NGridWeightsWriter implements Refreshable {
     }
 }
 
+class EdgedBallon extends RoundNGrid {
+    override function initInBuffer(target:Bytes, vertOffset:Int) {
+        super.initInBuffer(target, vertOffset);
+        var rad = new RadiusAtt(attrs, getVertsCount());
+        rad.r2 = 1;
+        rad.r1 = 1 - (1 / cornerSize);
+        rad.r1 *= rad.r1;
+        rad.writePostions(target, vertOffset, null);
+    }
+
+}
+
+class FlatBallon extends RoundNGrid {
+    override function initInBuffer(target:Bytes, vertOffset:Int) {
+        super.initInBuffer(target, vertOffset);
+        var rad = new RadiusAtt(attrs, getVertsCount());
+        rad.r2 = 1;
+        rad.r1 = 0;
+        rad.writePostions(target, vertOffset, null);
+    }
+}
 class RoundNGrid extends RoundWeightedGrid {
     static var uvWeights = AVConstructor.create(Axis2D, [0, 0.4999, 0.50001, 1], [0, 0.4999, 0.50001, 1]);
 
+    // ? equivalent of corner radius expressed in line thickness
     public var cornerSize = 3;
 
     public function new(ph:Placeholder2D, color = 0, cornerSize = 3) {
