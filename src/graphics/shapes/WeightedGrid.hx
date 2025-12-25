@@ -49,8 +49,10 @@ class WeightedGrid implements Shape {
 class RoundWeightedGrid extends WeightedGrid {
     var attrs:CircleSet = CircleSet.instance;
     var aaAttrRequired = true;
+    var color:Int = 0;
 
-    public function new(ph:Placeholder2D, posWeights, uvWeights) {
+    public function new(ph:Placeholder2D, posWeights, uvWeights, color = 0) {
+        this.color = color;
         var writers = attrs.getWriter(AttribAliases.NAME_POSITION);
         var wwr = new WeightedAttWriter(writers, posWeights);
         super(wwr);
@@ -84,7 +86,10 @@ class RoundWeightedGrid extends WeightedGrid {
     function createGridWriter(ph, wwr):Refreshable {
         throw "abstract: N/A";
     }
+    
     override function initInBuffer(target:Bytes, vertOffset:Int) {
+        super.initInBuffer(target, vertOffset);
+        attrs.writeColor(target, color, vertOffset, getVertsCount());
     }
 
     function passThrough(_, v)

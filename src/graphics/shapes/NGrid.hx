@@ -31,8 +31,9 @@ class RoundNGrid extends RoundWeightedGrid {
 
     public var cornerSize = 3;
 
-    public function new(ph:Placeholder2D) {
-        super(ph, AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0, 0.5, 0.5, 1]), uvWeights);
+    public function new(ph:Placeholder2D, color = 0, cornerSize = 3) {
+        this.cornerSize = cornerSize;
+        super(ph, AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0, 0.5, 0.5, 1]), uvWeights, color);
     }
 
     override function createGridWriter(ph:Placeholder2D, wwr):Refreshable {

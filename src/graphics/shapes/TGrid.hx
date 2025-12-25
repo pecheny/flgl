@@ -31,8 +31,8 @@ class TGridWeightsWriter implements Refreshable {
 class RoundTGrid extends RoundWeightedGrid {
     static var uvWeights = AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]);
 
-    public function new(ph:Placeholder2D) {
-        super(ph, AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]), uvWeights);
+    public function new(ph:Placeholder2D, color) {
+        super(ph, AVConstructor.create(Axis2D, [0, 0.5, 0.5, 1], [0., 1]), uvWeights, color);
     }
 
     override function createGridWriter(ph, wwr):Refreshable {
