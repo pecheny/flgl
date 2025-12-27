@@ -47,9 +47,11 @@ class EdgedBubble extends RoundTGrid {
 }
 
 class FlatBubble extends RoundTGrid {
+    public var rad(default, null):RadiusAtt<CircleSet>;
+
     override function initInBuffer(target:Bytes, vertOffset:Int) {
         super.initInBuffer(target, vertOffset);
-        var rad = new RadiusAtt(attrs, getVertsCount());
+        rad = new RadiusAtt(attrs, getVertsCount());
         rad.r1 = 0;
         rad.r2 = 1;
         rad.writePostions(target, vertOffset, null);
