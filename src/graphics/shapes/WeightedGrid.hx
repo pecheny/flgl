@@ -41,15 +41,16 @@ class WeightedGrid implements Shape {
     public function getIndices() {
         return inds;
     }
-    
-    public function initInBuffer(target:Bytes, vertOffset:Int):Void {}
 
+    public function initInBuffer(target:Bytes, vertOffset:Int):Void {}
 }
 
 class RoundWeightedGrid extends WeightedGrid {
     var attrs:CircleSet = CircleSet.instance;
     var aaAttrRequired = true;
     var color:Int = 0;
+
+    public var vertOffset(default, null):Int;
 
     public function new(ph:Placeholder2D, posWeights, uvWeights, color = 0) {
         this.color = color;
@@ -86,8 +87,9 @@ class RoundWeightedGrid extends WeightedGrid {
     function createGridWriter(ph, wwr):Refreshable {
         throw "abstract: N/A";
     }
-    
+
     override function initInBuffer(target:Bytes, vertOffset:Int) {
+        this.vertOffset = vertOffset;
         super.initInBuffer(target, vertOffset);
         attrs.writeColor(target, color, vertOffset, getVertsCount());
     }
@@ -101,9 +103,7 @@ class RoundWeightedGrid extends WeightedGrid {
 //     var uvWeights:AVector2D<Array<Float>>;
 //     var aaAttrRequired = false;
 //     var uvWwr:WeightedAttWriter;
-
 //     // var uvWriters = attrs.getWriter(AttribAliases.NAME_UV_0);
-
 //     public function new(attrs) {
 //         this.attrs = attrs;
 //         aaAttrRequired = attrs.hasAttr(AttribAliases.AASIZE_IN);
@@ -111,19 +111,16 @@ class RoundWeightedGrid extends WeightedGrid {
 //         var uvWriters = attrs.getWriter(AttribAliases.NAME_UV_0);
 //         uvWwr = new WeightedAttWriter(uvWriters, uvWeights);
 //     }
-
 //     public function create(ph:Placeholder2D) {
 //         // var posWeights = createPosWeights();
 //         // var writers = attrs.getWriter(AttribAliases.NAME_POSITION);
 //         // var wwr = new WeightedAttWriter(writers, posWeights);
-
 //         // var s = new WeightedGrid(wwr);
 //         // var sa = createGridWriter(ph, wwr);
 //         // var rr = new MultiRefresher();
 //         // rr.add(sa.refresh);
 //         // ph.axisStates[vertical].addSibling(rr);
 //         // if (aaAttrRequired) {
-
 //         //     var aac = getAACalculator(ph, s, wwr, rr);
 //         //     s.writeAttributes = (target:Bytes, vertOffset = 0, transformer) -> {
 //         //         uvWwr.writeAtts(target, vertOffset, passThrough);
@@ -136,24 +133,18 @@ class RoundWeightedGrid extends WeightedGrid {
 //         // }
 //         // return s;
 //     }
-
 //     function passThrough(_, v)
 //         return v;
-
 //     public function addUV(buffer:ShapesBuffer<T>, vertOffset = 0) {}
-
 //     function createUVWeights():AVector2D<Array<Float>> {
 //         throw "abstract: N/A";
 //     }
-
 //     function createPosWeights():AVector2D<Array<Float>> {
 //         throw "abstract: N/A";
 //     }
-
 //     function createGridWriter(ph, wwr):Refreshable {
 //         throw "abstract: N/A";
 //     }
-
 //     function getAACalculator(ph, s, wwr, rr) {
 //         var wip = new WidgetInPixels(ph);
 //         var piuv = new WGridPixelDensity(wwr.weights, uvWeights, wip);
@@ -165,7 +156,6 @@ class RoundWeightedGrid extends WeightedGrid {
 //         var aa = new PhAntialiasing(attrs, s.getVertsCount(), piuv);
 //         return aa;
 //     }
-
 //     // function adduv(shw:shapewidget<t>) {
 //     //     var buffer:shapesbuffer<t> = shw.getbuffer();
 //     //     var vertoffset = 0;
@@ -181,6 +171,7 @@ interface Directed {
 
 class WeightedAttWriter implements Directed {
     var writers:AttributeWriters;
+
     public var verbose:Bool;
 
     public var direction:Axis2D = horizontal;
@@ -194,8 +185,8 @@ class WeightedAttWriter implements Directed {
     public inline function writeAtts(target, vertOffset, tr) {
         var aw = weights[horizontal];
         var cw = weights[vertical];
-        if(verbose)
-        trace(aw, cw);
+        if (verbose)
+            trace(aw, cw);
         for (i in 0...cw.length)
             writeLine(target, direction, vertOffset + aw.length * i, 1, aw, tr);
         for (i in 0...aw.length) {
